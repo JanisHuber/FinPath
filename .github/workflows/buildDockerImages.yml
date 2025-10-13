@@ -49,15 +49,6 @@ jobs:
           DIGEST=$(grep -o 'sha256:[a-f0-9]\{64\}' push_output.txt | tail -n1)
           echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
 
-      - name: Debug frontend context
-        run: |
-          echo "PWD:"; pwd
-          echo "Listing finpath-frontend:"
-          ls -la ./finpath-frontend
-          echo "---- .dockerignore ----"
-          cat ./finpath-frontend/.dockerignore || true
-          test -f ./finpath-frontend/package.json || (echo "package.json fehlt im Kontext!"; exit 1)
-
       - name: Build and push frontend image
         id: frontend
         uses: docker/build-push-action@v6
