@@ -5,6 +5,10 @@
     <featureManager>
         <feature>jakartaee-10.0</feature>
         <feature>microProfile-7.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jsonb-3.0</feature>
+        <feature>jsonp-2.1</feature>
+        <feature>restfulWS-3.1</feature>
     </featureManager>
 
     <!-- This template enables security. To get the full use of all the capabilities, a keystore and user registry are required. -->
@@ -30,6 +34,25 @@
     <httpEndpoint id="defaultHttpEndpoint"
                   httpPort="9080"
                   httpsPort="9443" />
+
+    <variable name="db.host" value="${env.DB_HOST:-localhost}"/>
+    <variable name="db.port" value="${env.DB_PORT:-5432}"/>
+    <variable name="db.name" value="${env.DB_NAME:-finpath}"/>
+    <variable name="db.user" value="${env.DB_USER:-finpath}"/>
+    <variable name="db.pass" value="${env.DB_PASS:-secret}"/>
+
+    <library id="postgresLib">
+        <fileset dir="${server.config.dir}/resources" includes="postgresql*.jar"/>
+    </library>
+
+    <dataSource id="FinPathDS" jndiName="jdbc/FinPathDS">
+        <jdbcDriver libraryRef="postgresLib"/>
+        <properties serverName="${db.host}"
+                    portNumber="${db.port}"
+                    databaseName="${db.name}"
+                    user="${db.user}"
+                    password="${db.pass}"/>
+    </dataSource>
 
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>
