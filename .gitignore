@@ -1,0 +1,56 @@
+# === Node / Angular ===
+node_modules/
+dist/
+.angular/
+npm-debug.log
+yarn-error.log
+.env
+*.env
+src/environments/environment*.ts
+whatchatz-firebase*.json
+
+# === Java / Maven ===
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+.mvn/
+!mvnw
+!mvnw.cmd
+
+# === IntelliJ / VSCode ===
+.idea/
+.vscode/
+*.iml
+
+# === OS Crap ===
+.DS_Store
+Thumbs.db
+
+# === Docker ===
+.dockerignore
+
+# === Firebase / Secrets ===
+*.json
+*.key
+*.pem
+firebase-debug.log
+
+# === Database dumps, local crap ===
+*.sql
+*.sqlite
+*.db
+
+# === Logs ===
+*.log
+
+# === Misc ===
+*.swp
+*.swo
+placeholder.txt
+/whatchatz-frontend/src/environments/environment.ts
+
+# === Own ===
+/ops/secrets/*
