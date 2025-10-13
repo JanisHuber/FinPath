@@ -51,11 +51,16 @@ jobs:
 
       - name: Build and push frontend image
         id: frontend
-        run: |
-          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:latest ./finpath-frontend
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:latest | tee push_output.txt
-          DIGEST=$(grep -o 'sha256:[a-f0-9]\{64\}' push_output.txt | tail -n1)
-          echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
+        uses: docker/build-push-action@v6
+        with:
+          context: ./finpath-frontend
+          file: ./finpath-frontend/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:sha-${{ github.sha }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:buildcache,mode=max
 
 
       - name: Attest backend image
