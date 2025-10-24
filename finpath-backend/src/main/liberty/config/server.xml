@@ -3,7 +3,7 @@
 
     <!-- ==== Features ==== -->
     <featureManager>
-        <feature>webProfile-10.0</feature>  <!-- Vermeidet ORB/UserRegistry-Fehler -->
+        <feature>webProfile-10.0</feature>  <!-- Avoids ORB/UserRegistry error -->
         <feature>jdbc-4.3</feature>
         <feature>restfulWS-3.1</feature>
         <feature>jsonb-3.0</feature>
