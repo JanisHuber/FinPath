@@ -1,0 +1,21 @@
+{
+  "status": "Good",
+  "recommendations": [
+    {
+      "text": "Put some more into your Säule 3a this year.",
+      "type": "Finance",
+      "priority": "Medium",
+      "link": "/savings/saeule3a"
+    }
+  ],
+  "financialScore": {
+    "score": 78,
+    "context-tip": "Save some more to your Säule 3a to improve your financial score.",
+    "breakdown": {
+      "savings": 80,
+      "Emergency Fund": 75,
+      "investments": 60,
+      "debt": 90
+    }
+  }
+}
