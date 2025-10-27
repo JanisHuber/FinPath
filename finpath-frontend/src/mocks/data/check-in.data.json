@@ -1,4 +1,6 @@
 {
+  "id": 1,
+  "userUid": "user-7236hjafh234",
   "status": "Good",
   "recommendations": [
     {
@@ -10,12 +12,6 @@
   ],
   "financialScore": {
     "score": 78,
-    "context-tip": "Save some more to your Säule 3a to improve your financial score.",
-    "breakdown": {
-      "savings": 80,
-      "Emergency Fund": 75,
-      "investments": 60,
-      "debt": 90
-    }
+    "contextTip": "Save some more to your Säule 3a to improve your financial score."
   }
 }

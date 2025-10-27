@@ -1,0 +1,16 @@
+{
+  "financialScore": {
+    "score": 78,
+    "contextTip": "Save some more to your Säule 3a to improve your financial score.",
+    "financialBreakdown": {
+      "savings": 80,
+      "savingsContextTip": "Aim to save at least 20% of your income each month.",
+      "emergencyFund": 75,
+      "emergencyFundContextTip": "An emergency fund covering 3-6 months of expenses is recommended.",
+      "investments": 60,
+      "investmentsContextTip": "Consider diversifying your investment portfolio for better growth.",
+      "debt": 90,
+      "debtContextTip": "Maintain a low debt-to-income ratio for financial stability."
+    }
+  }
+}

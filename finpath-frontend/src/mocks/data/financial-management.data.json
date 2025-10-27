@@ -1,0 +1,11 @@
+{
+  "monthly-income": 8000,
+  "monthly-expenses": 6000,
+  "monthly-balance": 2000,
+  "investments": {
+    "stocks": 20000,
+    "bonds": 5000,
+    "monthly-progress-percent": 2.43,
+    "monthly-progress-amount": 600
+  }
+}
