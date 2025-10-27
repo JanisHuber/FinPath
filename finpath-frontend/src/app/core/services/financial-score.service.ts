@@ -10,12 +10,7 @@ export class FinancialScoreService {
 
   constructor(private http: HttpClient) {}
 
-  getFinancialScore(token: string): Observable<FinancialScore> {
-    return this.http.get<FinancialScore>('api/v1/financial-score', {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      }),
-    });
+  getFinancialScore(): Observable<FinancialScore> {
+    return this.http.get<FinancialScore>('api/v1/financial-score');
   }
 }

@@ -1,6 +1,4 @@
 export interface CheckIn {
-  id: number;
-  userUid: string;
   status: 'Good' | 'Average' | 'Bad';
   recommendations: Recommendation[];
   financialScore: FinancialScore;

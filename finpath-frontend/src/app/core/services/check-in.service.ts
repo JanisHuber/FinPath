@@ -10,12 +10,7 @@ export class CheckInService {
 
   constructor(private http: HttpClient) {}
 
-  getCheckIn(token: string): Observable<CheckIn> {
-    return this.http.get<CheckIn>('/api/v1/check-in', {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      }),
-    });
+  getCheckIn(): Observable<CheckIn> {
+    return this.http.get<CheckIn>('/api/v1/check-in');
   }
 }
