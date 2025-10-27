@@ -1,7 +1,11 @@
 import { Routes } from '@angular/router';
-import { DashboardPage } from '@features/dashboard/pages/dashboard-page/dashboard-page';
+import { DashboardPage } from '@app/features/pages/dashboard-page/dashboard-page';
 
 export const APP_ROUTES: Routes = [
-  { path: '', component: DashboardPage },
-  { path: '**', redirectTo: '' },
+  { path: '/dashboard', component: DashboardPage },
+  { path: '/forbidden', component: ForbiddenPage },
+  { path: '/login', component: LoginPage },
+  { path: '/settings', component: SettingsPage },
+  { path: '/profile', component: ProfilePage },
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
 ];
