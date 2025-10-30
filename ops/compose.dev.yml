@@ -21,9 +21,9 @@ services:
 
   frontend:
     build:
-      context: ../finpath-frontend
+      context: ../apps/finpath-frontend-web
       dockerfile: Dockerfile
-    image: ghcr.io/janishuber/finpath-frontend:latest
+    image: ghcr.io/janishuber/finpath-frontend-web:latest
     ports: ["8080:80"]
     depends_on: [ backend ]
 

@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Design-Tokens (ersetzt extend.colors aus v3) */
+@theme {
+  --color-bg: #0B1220;     /* bg-bg           */
+  --color-bg-soft: #101827;/* bg-bg-soft      */
+  --color-bg-mute: #0F172A;/* bg-bg-mute      */
+}
+
+/* Dark default */
+:root { color-scheme: dark; }
+html, body, app-root { height: 100%; }
+body { @apply bg-bg text-slate-200; }
