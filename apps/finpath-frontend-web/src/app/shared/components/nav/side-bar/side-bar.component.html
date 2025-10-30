@@ -1,0 +1,109 @@
+<div class="relative">
+  <!-- Overlay for small screens when sidebar is open -->
+  <div
+    *ngIf="!collapsed && isMobile"
+    (click)="closeOnOverlay()"
+    class="fixed inset-0 bg-black/40 z-40 transition-opacity"
+  ></div>
+
+  <aside
+    class="h-[calc(100vh-4rem)] sticky top-16 shrink-0 bg-bg-mute border-r border-slate-800/50 transition-[width] duration-300 overflow-hidden z-50"
+    [ngClass]="widthClass"
+  >
+    <!-- Toggle button -->
+    <button class="toggle-btn" (click)="toggleCollapse()" aria-label="Toggle sidebar">
+      <span class="icon-wrap" [ngClass]="{ rotated: collapsed }">
+        <!-- chevron, points left when expanded, right when collapsed -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </span>
+    </button>
+
+    <nav class="p-3 space-y-1 flex flex-col h-full">
+      <!-- Item -->
+      <a
+        (click)="linkClick.emit()"
+        class="group flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-800/60 transition cursor-pointer"
+      >
+        <span class="inline-flex h-5 w-5 items-center justify-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"
+            />
+          </svg>
+        </span>
+        <span class="text-sm" *ngIf="!collapsed">Dashboard</span>
+      </a>
+
+      <a
+        (click)="linkClick.emit()"
+        class="group flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-800/60 transition cursor-pointer"
+      >
+        <span class="inline-flex h-5 w-5 items-center justify-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M12 8v8m-4-4h8M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9-4.03-9-9-9-9 4.03-9 9z"
+            />
+          </svg>
+        </span>
+        <span class="text-sm" *ngIf="!collapsed">Einstellungen</span>
+      </a>
+
+      <!-- Logout -->
+      <div class="mt-auto pt-2 border-t border-slate-800/50">
+        <a
+          (click)="linkClick.emit()"
+          class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-800/60 cursor-pointer"
+        >
+          <span class="inline-flex h-5 w-5 items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 11-6 0v-1"
+              />
+            </svg>
+          </span>
+          <span class="text-sm" *ngIf="!collapsed">Abmelden</span>
+        </a>
+      </div>
+    </nav>
+  </aside>
+</div>

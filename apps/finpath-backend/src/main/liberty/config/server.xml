@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="finpath">
+
+    <!-- ==== Features ==== -->
+    <featureManager>
+        <feature>webProfile-10.0</feature>  <!-- Avoids ORB/UserRegistry error -->
+        <feature>jdbc-4.3</feature>
+        <feature>restfulWS-3.1</feature>
+        <feature>jsonb-3.0</feature>
+        <feature>mpHealth-4.0</feature>
+    </featureManager>
+
+    <!-- ==== HTTP Endpoint ==== -->
+    <httpEndpoint id="defaultHttpEndpoint" httpPort="9080" httpsPort="9443" />
+
+    <!-- ==== Basic Registry (fixes ORB/user registry warning) ==== -->
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="admin" password="admin123" />
+    </basicRegistry>
+
+    <!-- ==== Application Manager ==== -->
+    <applicationManager autoExpand="true" />
+
+    <!-- ==== Environment Variables ==== -->
+    <variable name="db.host" value="${env.DB_HOST:-localhost}" />
+    <variable name="db.port" value="${env.DB_PORT:-5432}" />
+    <variable name="db.name" value="${env.DB_NAME:-finpath}" />
+    <variable name="db.user" value="${env.DB_USER:-finpath}" />
+    <variable name="db.pass" value="${env.DB_PASS:-secret}" />
+
+    <!-- Compose a clean numeric port value for JDBC -->
+    <variable name="db.port.num" value="${db.port}" />
+
+    <!-- ==== PostgreSQL JDBC Library ==== -->
+    <library id="postgresLib">
+        <fileset dir="${server.config.dir}/resources" includes="postgresql*.jar" />
+    </library>
+
+    <!-- ==== DataSource ==== -->
+    <dataSource id="FinPathDS" jndiName="jdbc/FinPathDS" type="javax.sql.DataSource">
+        <jdbcDriver libraryRef="postgresLib" javax.sql.DataSource="org.postgresql.ds.PGSimpleDataSource" />
+        <properties
+                serverName="${db.host}"
+                portNumber="${db.port.num}"
+                databaseName="${db.name}"
+                user="${db.user}"
+                password="${db.pass}" />
+    </dataSource>
+
+    <!-- ==== Application Deployment ==== -->
+    <application
+            id="finpath"
+            name="finpath"
+            location="finpath.war"
+            type="war"
+            contextRoot="/" />
+</server>

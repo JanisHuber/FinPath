@@ -1,0 +1,10 @@
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
+    <persistence-unit name="finpathPU" transaction-type="JTA">
+        <jta-data-source>jdbc/FinPathDS</jta-data-source>
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="none"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>
