@@ -7,7 +7,6 @@ yarn-error.log
 .env
 *.env
 src/environments/environment*.ts
-whatchatz-firebase*.json
 
 # === Java / Maven ===
 target/
@@ -35,7 +34,7 @@ Thumbs.db
 # === Firebase / Secrets ===
 # Nur sensible JSON-Dateien ignorieren
 firebase-debug.log
-whatchatz-firebase*.json
+finpath-firebase*.json
 *.key
 *.pem
 
@@ -43,9 +42,6 @@ whatchatz-firebase*.json
 *.sql
 *.sqlite
 *.db
-
-# === Logs ===
-*.log
 
 # === Misc ===
 *.swp
@@ -55,3 +51,10 @@ placeholder.txt
 
 # === Own ===
 /ops/secrets/*
+
+# === Capacitor native builds ===
+ios/
+android/
+
+# === Standard build artefacts ===
+www/

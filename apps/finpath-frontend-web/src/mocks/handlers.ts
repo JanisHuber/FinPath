@@ -6,7 +6,7 @@ import financialSummaryData from './data/financial-management.data.json';
 export const handlers = [
   http.get('/api/v1/user/data', () => HttpResponse.json(userdata)),
   http.get('/api/v1/dashboard/check-in', () => HttpResponse.json(checkindata)),
-  http.get('api/v1/dashboard/monthly-summary', () => HttpResponse.json(financialSummaryData)),
+  http.get('/api/v1/dashboard/monthly-summary', () => HttpResponse.json(financialSummaryData)),
   // weitere mocks:
   // http.get('/api/v1/learning/progress', () => HttpResponse.json({...})),
   // http.post('/api/v1/goals', async ({ request }) => {
