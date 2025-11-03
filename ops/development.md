@@ -4,7 +4,7 @@ cd ops
 docker compose -f compose.dev.yml up -d db
 
 # Run the backend
-DB_HOST=localhost DB_PORT=5432 DB_NAME=finguide DB_USER=finguide DB_PASS=secret \
+DB_HOST=localhost DB_PORT=5432 DB_NAME=finpath DB_USER=finpath DB_PASS=secret \
 mvn liberty:dev
 
 # Development: web frontend
