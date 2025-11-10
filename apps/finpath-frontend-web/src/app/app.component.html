@@ -1,39 +1,12 @@
 <!-- App Shell -->
-<div class="min-h-screen w-full flex flex-col">
+<div class="min-h-screen w-full flex">
+  <!-- Sidebar: volle Höhe links -->
+  <app-side-bar class="hidden lg:block"></app-side-bar>
 
-  <!-- Header -->
-  <app-header
-    (menuClick)="toggleSidebar()"
-    class="sticky top-0 z-40">
-  </app-header>
-
-  <div class="flex-1 w-full flex">
-    <!-- Sidebar (Desktop) -->
-    <app-side-bar
-      [collapsed]="!sidebarOpen"
-      class="hidden lg:block">
-    </app-side-bar>
-
-    <!-- Mobile Drawer -->
-    <div
-      class="lg:hidden"
-      [class.pointer-events-none]="!mobileDrawerOpen">
-      <!-- Scrim -->
-      <div
-        class="fixed inset-0 bg-black/50 transition-opacity duration-200"
-        [class.opacity-0]="!mobileDrawerOpen"
-        [class.opacity-100]="mobileDrawerOpen"
-        (click)="closeMobileDrawer()">
-      </div>
-
-      <!-- Drawer Panel -->
-      <div
-        class="fixed left-0 top-0 bottom-0 w-72 max-w-[85vw] bg-bg-mute shadow-xl transition-transform duration-300 will-change-transform"
-        [class.-translate-x-full]="!mobileDrawerOpen"
-        [class.translate-x-0]="mobileDrawerOpen">
-        <app-side-bar [collapsed]="false" (linkClick)="closeMobileDrawer()"></app-side-bar>
-      </div>
-    </div>
+  <!-- Rechts: Header + Content in einer Spalte -->
+  <div class="flex-1 flex flex-col">
+    <!-- Header nur über dem Content-Bereich -->
+    <app-header class="sticky top-0 z-40"></app-header>
 
     <!-- Main Content -->
     <main class="flex-1 min-w-0">

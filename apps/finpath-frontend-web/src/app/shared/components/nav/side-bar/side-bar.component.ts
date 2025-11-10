@@ -1,10 +1,11 @@
 import { Component, Input, Output, EventEmitter, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-side-bar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './side-bar.component.html',
   styleUrls: ['./side-bar.component.css'],
 })

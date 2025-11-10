@@ -1,22 +1,33 @@
-<div class="relative">
-  <!-- Overlay for small screens when sidebar is open -->
-  <div
-    *ngIf="!collapsed && isMobile"
-    (click)="closeOnOverlay()"
-    class="fixed inset-0 bg-black/40 z-40 transition-opacity"
-  ></div>
+<div class="flex flex-col w-64 border-r border-slate-800/50 h-screen">
+  <!-- Header -->
+  <div class="flex items-center justify-between p-4 border-b border-slate-800/50">
+    <div class="flex items-center gap-2">
+      <div class="h-8 w-8 rounded-xl bg-linear-to-br from-emerald-400 to-blue-500"></div>
+      <span class="font-semibold text-gray-800 text-lg">FinPath</span>
+    </div>
 
-  <aside
-    class="h-[calc(100vh-4rem)] sticky top-16 shrink-0 bg-bg-mute border-r border-slate-800/50 transition-[width] duration-300 overflow-hidden z-50"
-    [ngClass]="widthClass"
-  >
-    <!-- Toggle button -->
-    <button class="toggle-btn" (click)="toggleCollapse()" aria-label="Toggle sidebar">
-      <span class="icon-wrap" [ngClass]="{ rotated: collapsed }">
-        <!-- chevron, points left when expanded, right when collapsed -->
+    <!-- Avatar + Carets -->
+    <div class="flex items-center gap-2 cursor-pointer">
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png"
+        alt="User avatar"
+        class="w-9 h-9 rounded-full"
+      />
+      <div class="flex flex-col items-center justify-center text-gray-500">
+        <!-- Caret Up -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4"
+          class="h-3 w-3"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        </svg>
+        <!-- Caret Down -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-3 w-3 -mt-0.5"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -25,85 +36,137 @@
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M15 19l-7-7 7-7"
+            d="M19 9l-7 7-7-7"
           />
         </svg>
-      </span>
-    </button>
-
-    <nav class="p-3 space-y-1 flex flex-col h-full">
-      <!-- Item -->
-      <a
-        (click)="linkClick.emit()"
-        class="group flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-800/60 transition cursor-pointer"
-      >
-        <span class="inline-flex h-5 w-5 items-center justify-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"
-            />
-          </svg>
-        </span>
-        <span class="text-sm" *ngIf="!collapsed">Dashboard</span>
-      </a>
-
-      <a
-        (click)="linkClick.emit()"
-        class="group flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-800/60 transition cursor-pointer"
-      >
-        <span class="inline-flex h-5 w-5 items-center justify-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M12 8v8m-4-4h8M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9-4.03-9-9-9-9 4.03-9 9z"
-            />
-          </svg>
-        </span>
-        <span class="text-sm" *ngIf="!collapsed">Einstellungen</span>
-      </a>
-
-      <!-- Logout -->
-      <div class="mt-auto pt-2 border-t border-slate-800/50">
-        <a
-          (click)="linkClick.emit()"
-          class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-800/60 cursor-pointer"
-        >
-          <span class="inline-flex h-5 w-5 items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 11-6 0v-1"
-              />
-            </svg>
-          </span>
-          <span class="text-sm" *ngIf="!collapsed">Abmelden</span>
-        </a>
       </div>
-    </nav>
-  </aside>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 pt-4 px-2 space-y-1">
+    <!-- Dashboard -->
+    <a
+      href="#"
+      class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-slate-800/60 transition"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 text-gray-700"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"
+        />
+      </svg>
+      {{ 'app.dashboard' | translate }}
+    </a>
+
+    <a
+      href="#"
+      class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-slate-800/60 transition"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M3 17l6-6 4 4 8-8M21 21H3"
+        />
+      </svg>
+      {{ 'app.finance-path' | translate }}
+    </a>
+
+    <a
+      href="#"
+      class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-slate-800/60 transition"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M12 6v12m8-10v10a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h12a2 2 0 012 2z"
+        />
+      </svg>
+      {{ 'app.learning' | translate }}
+    </a>
+
+    <a
+      href="#"
+      class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-slate-800/60 transition"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M5.121 17.804A9 9 0 1118.879 6.196 9 9 0 015.12 17.804z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M4.5 19.5a7.5 7.5 0 0115 0"
+        />
+      </svg>
+      {{ 'app.profile' | translate }}
+    </a>
+
+    <a
+      href="#"
+      class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-slate-800/60 transition"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.591 1.009c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.009 2.591c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.009 2.591c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.591 1.009c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.591-1.009c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.009-2.591c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.009-2.591c-.94-1.543.826-3.31 2.37-2.37.996.607 2.165.07 2.591-1.009z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+      </svg>
+      {{ 'app.settings' | translate }}
+    </a>
+  </nav>
 </div>
