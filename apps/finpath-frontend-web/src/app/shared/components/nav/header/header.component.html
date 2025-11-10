@@ -24,7 +24,7 @@
 
       <!-- User Badge -->
       <button
-        class="group h-10 pl-3 pr-2 rounded-xl bg-slate-800/60 hover:bg-slate-800/80 border border-slate-700/60 inline-flex items-center gap-3 transition"
+        class="group h-10 pl-3 pr-2 rounded-xl hover:bg-slate-800/80 border border-slate-700/60 inline-flex items-center gap-3 transition"
       >
         <div class="text-right leading-tight">
           <div class="text-sm font-medium">Janis Huber</div>
@@ -38,7 +38,7 @@
       </button>
 
       <!-- Language Switcher -->
-      <select (change)="switchLang($any($event.target).value)" [value]="currentLang">
+      <select (change)="switchLang($any($event.target).value)" [value]="currentLang" class="h-10 px-3 rounded-xl bg-slate-800/60 border border-slate-700/60 text-sm hover:bg-slate-800/80 transition">
         <option value="de">DE</option>
         <option value="fr">FR</option>
         <option value="en">EN</option>
