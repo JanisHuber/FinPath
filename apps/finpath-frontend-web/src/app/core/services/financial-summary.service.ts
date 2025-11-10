@@ -11,6 +11,6 @@ export class FinancialSummaryService {
   constructor(private http: HttpClient) {}
 
   getFinancialSummary(): Observable<FinancialSummary> {
-    return this.http.get<FinancialSummary>('/api/v1/financial-summary');
+    return this.http.get<FinancialSummary>('/api/v1/dashboard/monthly-summary');
   }
 }
