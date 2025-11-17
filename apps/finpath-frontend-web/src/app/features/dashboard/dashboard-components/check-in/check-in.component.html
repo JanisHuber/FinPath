@@ -1,0 +1,41 @@
+<div class="grid grid-cols-4 grid-rows-2">
+  <div class="col-span-2 row-span-2 col-start-2 row-start-1">{{ checkInData?.status }}</div>
+  <div class="col-start-1 row-start-1">
+    @if (checkInData?.status === 'Good') {
+    <div class="shrink-0 h-12 w-12 mr-5">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        role="img"
+        aria-label="Haken"
+      >
+        <path d="M20 6L9 17l-5-5"></path>
+      </svg>
+    </div>
+
+    } @else {
+    <div class="shrink-0 h-12 w-12 mr-5">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        role="img"
+        aria-label="Ausrufezeichen"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12" y2="16"></line>
+      </svg>
+    </div>
+    }
+  </div>
+  <div class="col-start-4">{{ checkInData?.financialScore?.score }}</div>
+  <div class="col-start-4 row-start-2">{{ bestRecommendation?.text }}</div>
+</div>
