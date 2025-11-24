@@ -16,8 +16,8 @@ services:
     environment:
       DB_HOST: db-dev
       DB_PORT: 5432
-    ports:
-      - "9080:9080"
+    expose:
+      - "9080"
     depends_on:
       - db-dev
     networks:
@@ -28,7 +28,7 @@ services:
     image: ghcr.io/janishuber/finpath-frontend-web:dev
     container_name: finpath-frontend-web-dev
     expose:
-      - "8080:80"
+      - "8080"
     depends_on:
       - backend-dev
     networks:
@@ -40,3 +40,4 @@ volumes:
 
 networks:
   finpath-net:
+    external: true
