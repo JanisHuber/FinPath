@@ -152,4 +152,18 @@ jobs:
           subject-digest: ${{ steps.build_mobile.outputs.digest }}
           push-to-registry: true
 
-  # -------- OPTIONAL: Auto-Deploy auf Staging / Hetzner --------
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=no deploy@your-server-ip "echo OK"
+
+      - name: Deploy to Hetzner DEV
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          script: |
+            cd /opt/finpath
+            git pull
+            docker compose -f ops/compose.dev.yml pull
+            docker compose -f ops/compose.dev.yml up -d
