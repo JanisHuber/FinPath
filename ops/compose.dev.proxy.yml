@@ -11,7 +11,7 @@ services:
     networks:
       - finpath-net
     depends_on:
-      - finpath-frontend-web-dev
+      - frontend-web-dev
     restart: always
 
 networks:
