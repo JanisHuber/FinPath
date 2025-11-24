@@ -28,12 +28,12 @@ services:
   backend-prod:
     image: ghcr.io/janishuber/finpath-backend:prod
     container_name: finpath-backend-prod
-    env_file: ./secrets/.env.prod
+    env_file: ./secrets/.env.prd
     environment:
       DB_HOST: db-prod
       DB_PORT: 5432
     expose:
-      - "9080"
+      - "9080:9080"
     depends_on:
       - db-prod
     networks:
