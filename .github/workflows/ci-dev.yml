@@ -67,7 +67,7 @@ jobs:
           context: ./apps/finpath-backend
           file: ./apps/finpath-backend/Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           tags: ${{ steps.meta_backend.outputs.tags }}
           labels: ${{ steps.meta_backend.outputs.labels }}
           cache-from: type=gha,scope=backend-dev
@@ -95,7 +95,7 @@ jobs:
           context: ./apps/finpath-frontend-web
           file: ./apps/finpath-frontend-web/Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           tags: ${{ steps.meta_web.outputs.tags }}
           labels: ${{ steps.meta_web.outputs.labels }}
           cache-from: type=gha,scope=frontend-web-dev
@@ -123,7 +123,7 @@ jobs:
           context: ./apps/finpath-frontend-mobile
           file: ./apps/finpath-frontend-mobile/Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           tags: ${{ steps.meta_mobile.outputs.tags }}
           labels: ${{ steps.meta_mobile.outputs.labels }}
           cache-from: type=gha,scope=frontend-mobile-dev
@@ -151,10 +151,6 @@ jobs:
           subject-name: ${{ env.IMAGE_PREFIX }}-frontend-mobile
           subject-digest: ${{ steps.build_mobile.outputs.digest }}
           push-to-registry: true
-
-      - name: Test SSH connection
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }} "echo OK"
 
       - name: Deploy to Hetzner DEV
         uses: appleboy/ssh-action@v1.2.0
