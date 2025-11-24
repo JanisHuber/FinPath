@@ -1,0 +1,19 @@
+services:
+  proxy-dev:
+    image: nginx:alpine
+    container_name: finpath-proxy
+    ports:
+      - "80:80"
+      # später evtl. - "443:443"
+    volumes:
+      - ./nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
+    # - ./proxy/certs:/etc/letsencrypt:ro   # später, wenn du Certbot o.ä. nutzt
+    networks:
+      - finpath-net
+    depends_on:
+      - frontend-web-dev
+    restart: always
+
+networks:
+  finpath-net:
+    external: true
