@@ -154,7 +154,7 @@ jobs:
 
       - name: Test SSH connection
         run: |
-          ssh -o StrictHostKeyChecking=no deploy@your-server-ip "echo OK"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }} "echo OK"
 
       - name: Deploy to Hetzner DEV
         uses: appleboy/ssh-action@v1.2.0
