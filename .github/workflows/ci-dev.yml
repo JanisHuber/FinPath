@@ -177,6 +177,4 @@ jobs:
             cd /opt/finpath-dev
             git pull
             docker compose -f ops/compose.dev.yml pull
-            docker compose -f ops/compose.dev.yml up -d
-            docker compose -f ops/compose.dev.proxy.yml pull
-            docker compose -f ops/compose.dev.proxy.yml up -d
+            docker compose -f compose.dev.yml -f compose.dev.proxy.yml up -d
