@@ -160,12 +160,12 @@ jobs:
           subject-digest: ${{ steps.build_web.outputs.digest }}
           push-to-registry: true
 
-      - name: Attest mobile image
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.IMAGE_PREFIX }}-frontend-mobile
-          subject-digest: ${{ steps.build_mobile.outputs.digest }}
-          push-to-registry: true
+#      - name: Attest mobile image
+#        uses: actions/attest-build-provenance@v2
+#        with:
+#          subject-name: ${{ env.IMAGE_PREFIX }}-frontend-mobile
+#          subject-digest: ${{ steps.build_mobile.outputs.digest }}
+#          push-to-registry: true
 
       - name: Deploy to Hetzner DEV
         uses: appleboy/ssh-action@v1.2.0
