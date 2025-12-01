@@ -104,31 +104,6 @@ docker compose -f ops/compose.prod.yml up -d
 
 ⸻
 
-Environment Files
-
-ops/secrets/.env.db.dev:
-
-POSTGRES_DB=finpath
-POSTGRES_USER=finpath
-POSTGRES_PASSWORD=secret
-PGDATA=/var/lib/postgresql/data
-
-ops/secrets/.env.dev:
-
-DB_HOST=db
-DB_PORT=5432
-DB_USER=finpath
-DB_PASS=secret
-DB_NAME=finpath
-
-APP_ENV=development
-LOG_LEVEL=debug
-NGINX_ENV=dev
-
-Für Produktion entsprechend .env.db.prod und .env.prod anlegen.
-
-⸻
-
 Reverse Proxy in Produktion
 
 Ein Reverse Proxy (z. B. Nginx) wird in Produktion für folgende Aufgaben benötigt:
