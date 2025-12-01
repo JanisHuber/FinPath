@@ -7,7 +7,7 @@ services:
       - "443:443"
     volumes:
       - ./proxy/dev.conf:/etc/nginx/conf.d/default.conf:ro
-    # - ./proxy/certs:/etc/letsencrypt:ro   # todo: TLS certs for dev
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     networks:
       - finpath-net
     depends_on:
