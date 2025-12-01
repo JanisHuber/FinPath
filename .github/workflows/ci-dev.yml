@@ -82,7 +82,7 @@ jobs:
           context: ./apps/finpath-backend
           file: ./apps/finpath-backend/Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           tags: ${{ steps.meta_backend.outputs.tags }}
           labels: ${{ steps.meta_backend.outputs.labels }}
           cache-from: type=gha,scope=backend-dev
@@ -110,40 +110,40 @@ jobs:
           context: ./apps/finpath-frontend-web
           file: ./apps/finpath-frontend-web/Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           tags: ${{ steps.meta_web.outputs.tags }}
           labels: ${{ steps.meta_web.outputs.labels }}
           cache-from: type=gha,scope=frontend-web-dev
           cache-to: type=gha,mode=max,scope=frontend-web-dev
           provenance: mode=min
 
-      # ---------- FRONTEND MOBILE (Web-Shell für Capacitor) ----------
-      - name: Meta (frontend mobile)
-        id: meta_mobile
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.IMAGE_PREFIX }}-frontend-mobile
-          tags: |
-            type=raw,value=dev
-            type=sha
-          labels: |
-            org.opencontainers.image.title=finpath-frontend-mobile
-            org.opencontainers.image.source=${{ github.repository }}
-            org.opencontainers.image.revision=${{ github.sha }}
-
-      - name: Build & Push (frontend mobile)
-        id: build_mobile
-        uses: docker/build-push-action@v6
-        with:
-          context: ./apps/finpath-frontend-mobile
-          file: ./apps/finpath-frontend-mobile/Dockerfile
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.meta_mobile.outputs.tags }}
-          labels: ${{ steps.meta_mobile.outputs.labels }}
-          cache-from: type=gha,scope=frontend-mobile-dev
-          cache-to: type=gha,mode=max,scope=frontend-mobile-dev
-          provenance: mode=min
+#      # ---------- FRONTEND MOBILE (Web-Shell für Capacitor) ----------
+#      - name: Meta (frontend mobile)
+#        id: meta_mobile
+#        uses: docker/metadata-action@v5
+#        with:
+#          images: ${{ env.IMAGE_PREFIX }}-frontend-mobile
+#          tags: |
+#            type=raw,value=dev
+#            type=sha
+#          labels: |
+#            org.opencontainers.image.title=finpath-frontend-mobile
+#            org.opencontainers.image.source=${{ github.repository }}
+#            org.opencontainers.image.revision=${{ github.sha }}
+#
+#      - name: Build & Push (frontend mobile)
+#        id: build_mobile
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: ./apps/finpath-frontend-mobile
+#          file: ./apps/finpath-frontend-mobile/Dockerfile
+#          push: true
+#          platforms: linux/amd64,linux/arm64
+#          tags: ${{ steps.meta_mobile.outputs.tags }}
+#          labels: ${{ steps.meta_mobile.outputs.labels }}
+#          cache-from: type=gha,scope=frontend-mobile-dev
+#          cache-to: type=gha,mode=max,scope=frontend-mobile-dev
+#          provenance: mode=min
 
       # ---------- ATTESTATIONS ----------
       - name: Attest backend image
@@ -177,4 +177,4 @@ jobs:
             cd /opt/finpath-dev
             git pull
             docker compose -f ops/compose.dev.yml pull
-            docker compose -f compose.dev.yml -f compose.dev.proxy.yml up -d
+            docker compose -f ops/compose.dev.yml -f ops/compose.dev.proxy.yml up -d
