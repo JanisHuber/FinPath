@@ -82,7 +82,7 @@ jobs:
           context: ./apps/finpath-backend
           file: ./apps/finpath-backend/Dockerfile
           push: true
-          platforms: linux/amd64
+          platforms: linux/ard64
           tags: ${{ steps.meta_backend.outputs.tags }}
           labels: ${{ steps.meta_backend.outputs.labels }}
           cache-from: type=gha,scope=backend-dev
@@ -110,7 +110,7 @@ jobs:
           context: ./apps/finpath-frontend-web
           file: ./apps/finpath-frontend-web/Dockerfile
           push: true
-          platforms: linux/amd64
+          platforms: linux/ard64
           tags: ${{ steps.meta_web.outputs.tags }}
           labels: ${{ steps.meta_web.outputs.labels }}
           cache-from: type=gha,scope=frontend-web-dev
