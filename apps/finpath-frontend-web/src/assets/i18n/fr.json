@@ -1,0 +1,10 @@
+{
+  "app": {
+    "title": "FinPath – Ton coach financier digital",
+    "dashboard": "Tableau de bord",
+    "finance-path": "Parcours financier",
+    "learning": "Apprentissage",
+    "profile": "Profil",
+    "settings": "Paramètres"
+  }
+}
