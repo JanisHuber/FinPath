@@ -1,12 +1,3 @@
-Perfekt 🔥 — das ist genau der richtige Moment, um deine Vision sauber für Copilot zu „grounden“.
-Hier ist dein vollständiges .github/copilot-instructions.md,
-voll abgestimmt auf FinGuide, deinen Stack (Angular + Jakarta EE + Postgres), dein Design-Ziel (Revolut-Look)
-und deine Vision (intelligenter, kontextbewusster Schweizer Finanzcoach mit Bildung, Motivation und Umsetzung).
-
-⸻
-
-.github/copilot-instructions.md
-
 # 🧭 Copilot Instructions — FinGuide
 
 ## 🪙 Projektüberblick
