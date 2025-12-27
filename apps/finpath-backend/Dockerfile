@@ -1,10 +1,24 @@
+# Spring Boot Dockerfile
+FROM eclipse-temurin:21-jre-alpine
 
-FROM icr.io/appcafe/open-liberty:kernel-slim-java21-openj9-ubi-minimal
+# Create non-root user
+RUN addgroup -S spring && adduser -S spring -G spring
 
-COPY --chown=1001:0 src/main/liberty/config /config/
+# Set working directory
+WORKDIR /app
 
-RUN features.sh
+# Copy JAR from Maven build (CI/CD builds before Docker)
+COPY --chown=spring:spring target/finpath.jar app.jar
 
-COPY --chown=1001:0 target/*.war /config/apps
+# Switch to non-root user
+USER spring:spring
 
-RUN configure.sh
+# Expose port
+EXPOSE 9080
+
+# Health check using Actuator
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:9080/actuator/health || exit 1
+
+# Run application
+ENTRYPOINT ["java", "-jar", "app.jar"]
