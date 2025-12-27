@@ -13,9 +13,48 @@ env:
   IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/finpath
 
 jobs:
-  build-and-push:
+  # ========== TESTING (parallel) - MUST PASS BEFORE PRODUCTION ==========
+  test-backend:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven  # NEW: Cache Maven dependencies
+
+      - name: Run backend tests
+        run: mvn -B -q test --file apps/finpath-backend/pom.xml
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'  # NEW: Cache npm dependencies
+          cache-dependency-path: apps/finpath-frontend-web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./apps/finpath-frontend-web
+        run: npm ci
+
+      - name: Run frontend tests
+        working-directory: ./apps/finpath-frontend-web
+        run: npm test -- --watch=false --browsers=ChromeHeadless
+
+  # ========== BUILD (parallel after tests pass) ==========
+  build-backend:
+    runs-on: ubuntu-latest
+    needs: test-backend  # NEW: Only build if tests pass!
     permissions:
       contents: read
       packages: write
@@ -31,6 +70,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
+          cache: maven  # NEW: Reuse cached dependencies
 
       - name: Build backend WAR (Maven)
         run: mvn -B -q -DskipTests clean package --file apps/finpath-backend/pom.xml
@@ -45,13 +85,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # -------- BACKEND META & BUILD --------
       - name: Meta (backend)
         id: meta_backend
         uses: docker/metadata-action@v5
         with:
-          images: |
-            ${{ env.IMAGE_PREFIX }}-backend
+          images: ${{ env.IMAGE_PREFIX }}-backend
           tags: |
             type=raw,value=latest
             type=sha
@@ -70,17 +108,45 @@ jobs:
           platforms: linux/amd64
           tags: ${{ steps.meta_backend.outputs.tags }}
           labels: ${{ steps.meta_backend.outputs.labels }}
-          cache-from: type=gha,scope=backend
-          cache-to: type=gha,mode=max,scope=backend
+          cache-from: type=gha,scope=backend-prod
+          cache-to: type=gha,mode=max,scope=backend-prod
           provenance: mode=min
 
-      # -------- FRONTEND META & BUILD --------
+      - name: Attest backend image
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.IMAGE_PREFIX }}-backend
+          subject-digest: ${{ steps.build_backend.outputs.digest }}
+          push-to-registry: true
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    needs: test-frontend  # NEW: Only build if tests pass!
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Meta (frontend)
         id: meta_frontend
         uses: docker/metadata-action@v5
         with:
-          images: |
-            ${{ env.IMAGE_PREFIX }}-frontend
+          images: ${{ env.IMAGE_PREFIX }}-frontend
           tags: |
             type=raw,value=latest
             type=sha
@@ -99,17 +165,9 @@ jobs:
           platforms: linux/amd64
           tags: ${{ steps.meta_frontend.outputs.tags }}
           labels: ${{ steps.meta_frontend.outputs.labels }}
-          cache-from: type=gha,scope=frontend
-          cache-to: type=gha,mode=max,scope=frontend
+          cache-from: type=gha,scope=frontend-prod
+          cache-to: type=gha,mode=max,scope=frontend-prod
           provenance: mode=min
-
-      # -------- ATTESTATIONS --------
-      - name: Attest backend image
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.IMAGE_PREFIX }}-backend
-          subject-digest: ${{ steps.build_backend.outputs.digest }}
-          push-to-registry: true
 
       - name: Attest frontend image
         uses: actions/attest-build-provenance@v2
