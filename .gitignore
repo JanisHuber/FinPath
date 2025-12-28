@@ -51,6 +51,7 @@ placeholder.txt
 
 # === Own ===
 /ops/secrets/*
+!/ops/secrets/*.template
 
 # === Capacitor native builds ===
 ios/

@@ -1,0 +1,41 @@
+# Development-specific configuration
+# This file is loaded when SPRING_PROFILES_ACTIVE=dev
+
+spring:
+  # JPA/Hibernate - Verbose logging for development
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  # DevTools - Hot reload enabled for development
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+# Server - Show detailed errors in development
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
+
+# CORS Configuration - Allow localhost and dev domain
+cors:
+  allowed-origins: https://dev.css-appli24.com,http://localhost:4200
+
+# Logging - Debug level for development
+logging:
+  level:
+    root: INFO
+    ch.finpath: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

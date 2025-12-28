@@ -2,50 +2,41 @@ spring:
   application:
     name: finpath
 
-  # Database Configuration
+  # Database Configuration - Uses environment variables for security
   datasource:
-    url: jdbc:postgresql://localhost:5432/finpath
-    username: finpath
-    password: secret
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:finpath}
+    username: ${DB_USER:finpath}
+    password: ${DB_PASS}  # REQUIRED - no default for security
     driver-class-name: org.postgresql.Driver
     hikari:
-      connection-timeout: 20000
+      connection-timeout: 30000
       maximum-pool-size: 10
       minimum-idle: 2
       idle-timeout: 300000
+      max-lifetime: 600000
 
-  # JPA/Hibernate Configuration
+  # JPA/Hibernate Configuration - Common settings for all environments
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    open-in-view: false
     properties:
       hibernate:
-        format_sql: true
         jdbc:
           time_zone: UTC
 
-  # DevTools (hot reload)
-  devtools:
-    restart:
-      enabled: true
-    livereload:
-      enabled: true
-
 # Server Configuration
 server:
-  port: 9080
-  error:
-    include-message: always
-    include-binding-errors: always
+  port: ${SERVER_PORT:9080}
+  shutdown: graceful
 
 # Actuator Configuration
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
+        include: health,info,metrics,prometheus
       base-path: /actuator
   endpoint:
     health:
@@ -53,14 +44,14 @@ management:
   info:
     env:
       enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
 
-# Logging Configuration
+# Logging Configuration - Base configuration (overridden by profiles)
 logging:
   level:
     root: INFO
-    ch.finpath: DEBUG
-    org.springframework.web: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    ch.finpath: INFO

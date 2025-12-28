@@ -14,8 +14,11 @@ services:
     container_name: finpath-backend-dev
     env_file: ./secrets/.env.dev
     environment:
+      # Database connection (overrides from env file)
       DB_HOST: db-dev
       DB_PORT: 5432
+      # Spring Boot profile
+      SPRING_PROFILES_ACTIVE: dev
     expose:
       - "9080"
     depends_on:

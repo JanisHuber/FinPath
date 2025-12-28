@@ -1,6 +1,8 @@
 package ch.finpath.controller;
 
 import ch.finpath.repository.DatabaseCheckRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,7 @@ import java.util.Map;
 @RequestMapping("/api/db")
 public class DatabaseController {
 
+    private static final Logger log = LoggerFactory.getLogger(DatabaseController.class);
     private final DatabaseCheckRepository repository;
 
     public DatabaseController(DatabaseCheckRepository repository) {
@@ -30,7 +33,11 @@ public class DatabaseController {
             result.put("status", "connected");
             return ResponseEntity.ok(result);
         } catch (Exception e) {
-            result.put("error", e.getClass().getSimpleName() + ": " + e.getMessage());
+            // Log full error details server-side for debugging
+            log.error("Database connection test failed", e);
+
+            // Return generic error message to client (don't expose internal details)
+            result.put("error", "Database connection failed");
             result.put("status", "error");
             return ResponseEntity.status(500).body(result);
         }

@@ -1,0 +1,58 @@
+# Production-specific configuration
+# This file is loaded when SPRING_PROFILES_ACTIVE=prd
+
+spring:
+  # JPA/Hibernate - Disable verbose logging in production
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          time_zone: UTC
+          batch_size: 20
+          fetch_size: 50
+
+  # DevTools - DISABLED in production for security
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
+
+# Server - Hide detailed errors in production
+server:
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+    min-response-size: 1024
+  shutdown: graceful
+
+# Actuator - Expose only health and metrics in production
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: never
+
+# Logging - WARN level for production
+logging:
+  level:
+    root: WARN
+    ch.finpath: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# CORS Configuration
+cors:
+  allowed-origins: https://css-appli24.com

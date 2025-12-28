@@ -23,14 +23,24 @@ services:
     networks:
       - finpath-net
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-finpath}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend-prod:
     image: ghcr.io/janishuber/finpath-backend:prod
     container_name: finpath-backend-prod
     env_file: ./secrets/.env.prd
     environment:
+      # Database connection (overrides from env file)
       DB_HOST: db-prod
       DB_PORT: 5432
+      # Spring Boot profile
+      SPRING_PROFILES_ACTIVE: prd
+      # JVM Options for production
+      JAVA_OPTS: "-Xmx512m -Xms256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
     expose:
       - "9080:9080"
     depends_on:
@@ -38,6 +48,20 @@ services:
     networks:
       - finpath-net
     restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 768M
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   frontend-web-prod:
     image: ghcr.io/janishuber/finpath-frontend-web:prod
