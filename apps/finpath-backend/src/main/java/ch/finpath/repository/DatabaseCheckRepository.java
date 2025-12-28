@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Repository
 public class DatabaseCheckRepository {
@@ -12,8 +12,8 @@ public class DatabaseCheckRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public LocalDateTime getCurrentDatabaseTime() {
-        return (LocalDateTime) entityManager
+    public Instant getCurrentDatabaseTime() {
+        return (Instant) entityManager
                 .createNativeQuery("SELECT now()")
                 .getSingleResult();
     }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +28,7 @@ public class DatabaseController {
         Map<String, String> result = new HashMap<>();
 
         try {
-            LocalDateTime dbTime = repository.getCurrentDatabaseTime();
+            Instant dbTime = repository.getCurrentDatabaseTime();
             result.put("dbTime", dbTime.toString());
             result.put("status", "connected");
             return ResponseEntity.ok(result);

@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,7 +24,7 @@ class DatabaseControllerTest {
 
     @Test
     void testDatabase_ShouldReturnSuccess() throws Exception {
-        LocalDateTime testTime = LocalDateTime.now();
+        Instant testTime = Instant.now();
         when(repository.getCurrentDatabaseTime()).thenReturn(testTime);
 
         mockMvc.perform(get("/api/db"))
