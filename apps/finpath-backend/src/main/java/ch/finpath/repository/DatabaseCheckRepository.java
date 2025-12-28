@@ -1,14 +1,20 @@
 package ch.finpath.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 
 @Repository
-public interface DatabaseCheckRepository extends JpaRepository<Object, Long> {
+public class DatabaseCheckRepository {
 
-    @Query(value = "SELECT now()", nativeQuery = true)
-    LocalDateTime getCurrentDatabaseTime();
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public LocalDateTime getCurrentDatabaseTime() {
+        return (LocalDateTime) entityManager
+                .createNativeQuery("SELECT now()")
+                .getSingleResult();
+    }
 }
