@@ -1,0 +1,20 @@
+services:
+  proxy-prd:
+    image: nginx:alpine
+    container_name: finpath-proxy-prd
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./proxy/prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - /opt/finpath-prd/certs:/etc/nginx/certs:ro
+    networks:
+      - finpath-net
+    depends_on:
+      - backend-prod
+      - frontend-web-prod
+    restart: always
+
+networks:
+  finpath-net:
+    external: true
