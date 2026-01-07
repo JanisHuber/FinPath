@@ -11,6 +11,7 @@ concurrency:
 env:
   REGISTRY: ghcr.io
   IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/finpath
+  IMAGE_PREFIX_LOWER: ghcr.io/janishuber/finpath
 
 jobs:
   build-backend:
@@ -50,7 +51,7 @@ jobs:
           file: ./apps/finpath-backend/Dockerfile
           push: true
           platforms: linux/arm64
-          tags: ${{ env.IMAGE_PREFIX }}-backend:prod
+          tags: ${{ env.IMAGE_PREFIX_LOWER }}-backend:prod
           cache-from: type=gha,scope=backend-prod
           cache-to: type=gha,mode=max,scope=backend-prod
 
@@ -81,7 +82,7 @@ jobs:
           file: ./apps/finpath-frontend-web/Dockerfile
           push: true
           platforms: linux/arm64
-          tags: ${{ env.IMAGE_PREFIX }}-frontend-web:prod
+          tags: ${{ env.IMAGE_PREFIX_LOWER }}-frontend-web:prod
           cache-from: type=gha,scope=frontend-web-prod
           cache-to: type=gha,mode=max,scope=frontend-web-prod
 
