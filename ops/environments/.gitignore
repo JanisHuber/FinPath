@@ -1,13 +1,10 @@
 # Ignore all actual secret files
+/secrets
 .env.dev
 .env.prd
 .env.db.dev
 .env.db.prd
 
-# Firebase service account keys
-firebase-admin-key-*.json
-
 # Keep templates
 !.env.*.template
-!README.md
 !.gitignore

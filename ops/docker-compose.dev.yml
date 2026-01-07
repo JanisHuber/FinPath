@@ -1,28 +1,13 @@
 services:
-  db-dev:
-    image: postgres:16
-    container_name: finpath-db-dev
-    env_file: ./secrets/.env.db.dev
-    volumes:
-      - db_data_dev:/var/lib/postgresql/data
-    networks:
-      - finpath-net
-    restart: always
-
   backend-dev:
     image: ghcr.io/janishuber/finpath-backend:dev
     container_name: finpath-backend-dev
-    env_file: ./secrets/.env.dev
+    env_file: ./environments/dev.env
     environment:
-      # Database connection (overrides from env file)
-      DB_HOST: db-dev
-      DB_PORT: 5432
       # Spring Boot profile
       SPRING_PROFILES_ACTIVE: dev
     expose:
       - "9080"
-    depends_on:
-      - db-dev
     networks:
       - finpath-net
     restart: always
@@ -37,9 +22,6 @@ services:
     networks:
       - finpath-net
     restart: always
-
-volumes:
-  db_data_dev:
 
 networks:
   finpath-net:

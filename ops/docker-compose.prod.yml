@@ -4,6 +4,7 @@ services:
     container_name: finpath-proxy
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/finpath/certs:/etc/nginx/certs:ro
     ports:
       - "80:80"
       - "443:443"
@@ -14,37 +15,17 @@ services:
       - finpath-net
     restart: always
 
-  db-prod:
-    image: postgres:16
-    container_name: finpath-db-prod
-    env_file: ./secrets/.env.db.prod
-    volumes:
-      - db_data_prod:/var/lib/postgresql/data
-    networks:
-      - finpath-net
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-finpath}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   backend-prod:
     image: ghcr.io/janishuber/finpath-backend:prod
     container_name: finpath-backend-prod
-    env_file: ./secrets/.env.prd
+    env_file: ./environments/prod.env
     environment:
-      # Database connection (overrides from env file)
-      DB_HOST: db-prod
-      DB_PORT: 5432
       # Spring Boot profile
       SPRING_PROFILES_ACTIVE: prd
       # JVM Options for production
       JAVA_OPTS: "-Xmx512m -Xms256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
     expose:
       - "9080:9080"
-    depends_on:
-      - db-prod
     networks:
       - finpath-net
     restart: always
@@ -73,9 +54,6 @@ services:
     networks:
       - finpath-net
     restart: always
-
-volumes:
-  db_data_prod:
 
 networks:
   finpath-net:

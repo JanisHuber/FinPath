@@ -205,8 +205,3 @@ Copilot soll:
 
 (Dieses Dokument definiert den permanenten Kontext für alle Copilot-Vorschläge in FinGuide.
 Copilot soll Code, Texte und Strukturen so gestalten, dass sie dieser Vision entsprechen.)
-
----
-
-Möchtest du, dass ich dir zusätzlich ein **`docs/PRD.md`** erstelle, das Copilot und du gemeinsam pflegen könnt (also die inhaltliche Produktbeschreibung + Status-Tabelle + Roadmap)?  
-Das wäre der logische nächste Schritt, um dein Projekt für Teamarbeit + AI-Assistenz perfekt vorzubereiten.

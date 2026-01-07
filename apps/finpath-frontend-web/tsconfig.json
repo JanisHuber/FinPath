@@ -19,7 +19,7 @@
       "@shared/*": ["app/shared/*"],
       "@features/*": ["app/features/*"],
       "@models/*": ["app/core/models/*"],
-      "@env": ["environments/environment"],
+      "@environments/*": ["environments/*"],
       "@api/*": ["app/api-client/*"]
     }
   }
