@@ -25,7 +25,7 @@ services:
       # JVM Options for production
       JAVA_OPTS: "-Xmx512m -Xms256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
     expose:
-      - "9080:9080"
+      - "9080"
     networks:
       - finpath-net
     restart: always

@@ -166,10 +166,10 @@ jobs:
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
           script: |
-            sudo chown -R $USER:$USER /opt/finpath
             cd /opt/finpath
             git config --global --add safe.directory /opt/finpath
-            git pull origin dev
+            git fetch origin dev
+            git reset --hard origin/dev
             cd ops
             docker compose -f docker-compose.dev.yml pull
             docker compose -f docker-compose.dev.yml up -d
