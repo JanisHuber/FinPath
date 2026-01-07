@@ -19,7 +19,7 @@ services:
     env_file: ./environments/prod.env
     environment:
       SPRING_PROFILES_ACTIVE: prd
-      JDBC_URL: ${DB_URL}
+      DB_URL: ${DB_URL}
       JAVA_OPTS: "-Xmx512m -Xms256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
     expose:
       - "9080"

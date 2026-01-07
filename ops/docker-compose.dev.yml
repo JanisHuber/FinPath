@@ -19,6 +19,7 @@ services:
     env_file: ./environments/dev.env
     environment:
       SPRING_PROFILES_ACTIVE: dev
+      DB_URL: ${DB_URL}
     expose:
       - "9080"
     networks:
