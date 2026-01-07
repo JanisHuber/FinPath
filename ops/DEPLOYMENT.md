@@ -27,14 +27,14 @@ cd ops/environments
 
 # DEV Environment
 cat > dev.env << 'EOF'
-DB_URL=jdbc:postgresql://your-db-host:5432/finpath_dev
+JDBC_URL=jdbc:postgresql://your-db-host:5432/finpath_dev
 DB_USERNAME=your-db-user
 DB_PASSWORD=your-db-password
 EOF
 
 # PROD Environment
 cat > prod.env << 'EOF'
-DB_URL=jdbc:postgresql://your-db-host:5432/finpath_prod
+JDBC_URL=jdbc:postgresql://your-db-host:5432/finpath_prod
 DB_USERNAME=your-db-user
 DB_PASSWORD=your-db-password
 EOF
