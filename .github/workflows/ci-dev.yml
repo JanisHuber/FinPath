@@ -157,7 +157,7 @@ jobs:
   # ========== DEPLOY (after all builds complete) ==========
   deploy:
     runs-on: ubuntu-latest
-    needs: [build-backend, build-frontend-web]  # NEW: Wait for both builds
+    needs: [build-backend, build-frontend-web]
     steps:
       - name: Deploy to Hetzner DEV
         uses: appleboy/ssh-action@v1.2.0
@@ -166,7 +166,8 @@ jobs:
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
           script: |
-            cd /opt/finpath-dev
-            git pull
-            docker compose -f ops/compose.dev.yml pull
-            docker compose -f ops/compose.dev.yml -f ops/compose.dev.proxy.yml up -d
+            cd /opt/finpath
+            git pull origin dev
+            cd ops
+            docker compose -f docker-compose.dev.yml pull
+            docker compose -f docker-compose.dev.yml up -d
