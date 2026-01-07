@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { environment } from '@environments/environment';
-import { AuthResponse, createClient, SupabaseClient, User } from '@supabase/supabase-js';
+import { environment } from '@env';
+import { AuthChangeEvent, AuthResponse, createClient, Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 
 @Injectable({
@@ -23,7 +23,7 @@ export class AuthService {
     const { data } = await this.supabase.auth.getSession();
     this.currentUserSubject.next(data.session?.user ?? null);
 
-    this.supabase.auth.onAuthStateChange((_event, session) => {
+    this.supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
       this.currentUserSubject.next(session?.user ?? null);
     });
   }

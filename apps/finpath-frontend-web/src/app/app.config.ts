@@ -24,7 +24,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(
       TranslateModule.forRoot({
         defaultLanguage: 'de',
-              loader: provideTranslateHttpLoader({prefix:"./assets/i18n/", suffix:".json"}),
+        loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json' }),
       })
     ),
   ],

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostListener, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { IconComponent } from '../icon-component/icon.component';

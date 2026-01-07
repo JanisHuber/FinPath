@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-icon-component',
   imports: [CommonModule],
   templateUrl: './icon.component.html',
-  styleUrl: './icon.component.css'
+  styleUrls: ['./icon.component.css']
 })
 export class IconComponent {
   @Input() iconName!: 'dashboard' | 'finance-path' | 'learning' | 'profile' | 'settings';

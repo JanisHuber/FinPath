@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FinancialSummary } from '@app/core/models/financial-summary.models';
-import { FinancialSummaryService } from '@app/core/services/financial-summary.service';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FinancialSummary } from '@models/financial-summary.models';
+import { FinancialSummaryService } from '@core/services/financial-summary.service';
 
 @Component({
   selector: 'app-finance-summary',
@@ -10,20 +11,22 @@ import { FinancialSummaryService } from '@app/core/services/financial-summary.se
   styleUrls: ['./finance-summary.component.css']
 })
 export class FinanceSummaryComponent implements OnInit {
-
   financialSummaryData: FinancialSummary | null = null;
 
-  constructor(private financialSummaryService: FinancialSummaryService) { }
+  private destroyRef = inject(DestroyRef);
 
-  ngOnInit() {
-    this.financialSummaryService.getFinancialSummary().subscribe({
-      next: (data) => {
-        this.financialSummaryData = data;
-      },
-      error: (error) => {
-        console.error('Error fetching Financial Summary data:', error);
-      }
-    });
+  constructor(private financialSummaryService: FinancialSummaryService) {}
+
+  ngOnInit(): void {
+    this.financialSummaryService.getFinancialSummary()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.financialSummaryData = data;
+        },
+        error: (error) => {
+          console.error('Error fetching Financial Summary data:', error);
+        }
+      });
   }
-
 }

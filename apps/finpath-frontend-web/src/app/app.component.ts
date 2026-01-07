@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './shared/components/nav/header/header.component';
-import { SidebarComponent } from './shared/components/nav/side-bar/side-bar.component';
+import { HeaderComponent } from '@shared/components/nav/header/header.component';
+import { SidebarComponent } from '@shared/components/nav/side-bar/side-bar.component';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
