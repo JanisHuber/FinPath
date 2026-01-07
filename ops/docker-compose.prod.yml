@@ -1,4 +1,18 @@
 services:
+  proxy-prod:
+    image: nginx:alpine
+    container_name: finpath-proxy-prod
+    volumes:
+      - ./nginx/nginx-prod.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - backend-prod
+      - frontend-web-prod
+    networks:
+      - finpath-net-prod
+    restart: always
+
   backend-prod:
     image: ghcr.io/janishuber/finpath-backend:prod
     container_name: finpath-backend-prod
@@ -10,7 +24,7 @@ services:
     expose:
       - "9080"
     networks:
-      - finpath-net
+      - finpath-net-prod
     restart: always
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9080/actuator/health"]
@@ -27,9 +41,10 @@ services:
     depends_on:
       - backend-prod
     networks:
-      - finpath-net
+      - finpath-net-prod
     restart: always
 
 networks:
-  finpath-net:
-    external: true
+  finpath-net-prod:
+    name: finpath-net-prod
+    driver: bridge

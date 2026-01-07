@@ -4,20 +4,15 @@ Einfaches Deployment ohne HTTPS, SSL-Zertifikate oder Cloudflare.
 
 ## Architektur
 
-- **Gemeinsamer Proxy**: Ein einzelner Nginx-Proxy, der unabhängig läuft
-- **DEV Environment**: Läuft auf Port 8080
-- **PROD Environment**: Läuft auf Port 80
+- **Separate Proxies**: Jedes Environment hat seinen eigenen Nginx-Proxy
+- **DEV Environment**: Eigenes Netzwerk, läuft auf Port 8080
+- **PROD Environment**: Eigenes Netzwerk, läuft auf Port 80
 - **Automatisches Deployment**: Push auf `dev` oder `prod` Branch triggert Build & Deploy
+- **Vollständige Isolation**: Dev und Prod sind komplett unabhängig
 
 ## Ersteinrichtung auf Hetzner Server
 
-### 1. Docker Netzwerk erstellen
-
-```bash
-docker network create finpath-net
-```
-
-### 2. Repository klonen
+### 1. Repository klonen
 
 ```bash
 cd /opt
@@ -25,7 +20,7 @@ git clone https://github.com/janishuber/FinPath.git finpath
 cd finpath
 ```
 
-### 3. Environment-Dateien erstellen
+### 2. Environment-Dateien erstellen
 
 ```bash
 cd ops/environments
@@ -45,20 +40,28 @@ DB_PASSWORD=your-db-password
 EOF
 ```
 
-### 4. GHCR Login (für private Images)
+### 3. GHCR Login (für private Images)
 
 ```bash
 echo "YOUR_GITHUB_TOKEN" | docker login ghcr.io -u janishuber --password-stdin
 ```
 
-### 5. Proxy starten (einmalig)
+### 4. Services starten
 
 ```bash
 cd /opt/finpath/ops
-docker compose -f docker-compose.proxy.yml up -d
+
+# DEV Environment starten
+docker compose -f docker-compose.dev.yml up -d
+
+# PROD Environment starten (optional, unabhängig von DEV)
+docker compose -f docker-compose.prod.yml up -d
 ```
 
-Der Proxy läuft permanent und routet Traffic zu dev/prod Services.
+Jedes Environment:
+- Erstellt sein eigenes Docker-Netzwerk automatisch
+- Startet seinen eigenen Proxy
+- Ist komplett unabhängig vom anderen Environment
 
 ## Deployment Workflow
 
@@ -77,7 +80,7 @@ git push origin prod
 Der GitHub Actions Workflow:
 1. Baut die Docker Images
 2. Pusht sie zu GHCR
-3. Deployed auf den Hetzner Server
+3. Deployed auf den Hetzner Server (nur das jeweilige Environment)
 
 ### Manuelles Deployment
 
@@ -105,78 +108,87 @@ docker compose -f docker-compose.prod.yml up -d
 ### Logs anschauen
 
 ```bash
-# DEV
+# DEV (alle Services inkl. Proxy)
 docker compose -f docker-compose.dev.yml logs -f
 
-# PROD
+# PROD (alle Services inkl. Proxy)
 docker compose -f docker-compose.prod.yml logs -f
 
-# Proxy
-docker compose -f docker-compose.proxy.yml logs -f
+# Nur Proxy
+docker logs finpath-proxy-dev -f
+docker logs finpath-proxy-prod -f
 ```
 
 ### Services neustarten
 
 ```bash
-# DEV
+# DEV (inkl. Proxy)
 docker compose -f docker-compose.dev.yml restart
 
-# PROD
+# PROD (inkl. Proxy)
 docker compose -f docker-compose.prod.yml restart
 
-# Proxy
-docker compose -f docker-compose.proxy.yml restart
+# Nur Proxy neustarten
+docker restart finpath-proxy-dev
+docker restart finpath-proxy-prod
 ```
 
 ### Services stoppen
 
 ```bash
-# DEV
+# DEV komplett stoppen
 docker compose -f docker-compose.dev.yml down
 
-# PROD
+# PROD komplett stoppen
 docker compose -f docker-compose.prod.yml down
-
-# Proxy (normalerweise nicht nötig)
-docker compose -f docker-compose.proxy.yml down
 ```
 
 ### Status prüfen
 
 ```bash
+# Alle Container anzeigen
 docker ps
+
+# Nur DEV Container
+docker ps | grep dev
+
+# Nur PROD Container
+docker ps | grep prod
+
+# Netzwerke anzeigen
 docker network ls
 ```
 
 ### Container Shell öffnen
 
 ```bash
-# Backend DEV
+# Backend
 docker exec -it finpath-backend-dev bash
-
-# Backend PROD
 docker exec -it finpath-backend-prod bash
 
 # Proxy
-docker exec -it finpath-proxy sh
+docker exec -it finpath-proxy-dev sh
+docker exec -it finpath-proxy-prod sh
 ```
 
 ## Troubleshooting
-
-### Services können nicht mit Proxy kommunizieren
-
-Prüfe ob alle Container im gleichen Netzwerk sind:
-
-```bash
-docker network inspect finpath-net
-```
 
 ### Proxy zeigt 502 Bad Gateway
 
 Prüfe ob die Backend/Frontend Services laufen:
 
 ```bash
-docker ps | grep finpath
+# DEV
+docker compose -f docker-compose.dev.yml ps
+
+# PROD
+docker compose -f docker-compose.prod.yml ps
+```
+
+Wenn Services nicht laufen, neu starten:
+
+```bash
+docker compose -f docker-compose.dev.yml restart
 ```
 
 ### Images können nicht gepullt werden
@@ -196,23 +208,64 @@ sudo lsof -i :80
 sudo lsof -i :8080
 ```
 
-## Migration vom alten Setup
-
-Falls du vom alten Setup (mit SSL) migrierst:
+Falls alte Container laufen:
 
 ```bash
-# Alte Services stoppen
+# Alten Proxy stoppen
+docker stop finpath-proxy
+docker rm finpath-proxy
+
+# Altes Netzwerk entfernen
+docker network rm finpath-net
+```
+
+### Nginx-Konfiguration testen
+
+```bash
+# DEV Proxy Config testen
+docker exec finpath-proxy-dev nginx -t
+
+# PROD Proxy Config testen
+docker exec finpath-proxy-prod nginx -t
+```
+
+### Kompletter Neustart eines Environments
+
+```bash
+# DEV komplett neu aufsetzen
 cd /opt/finpath/ops
-docker compose down
+docker compose -f docker-compose.dev.yml down
+docker compose -f docker-compose.dev.yml pull
+docker compose -f docker-compose.dev.yml up -d
+```
 
-# Alte Nginx-Konfiguration wird automatisch überschrieben
-# Proxy neu starten
-docker compose -f docker-compose.proxy.yml up -d
+## Migration vom alten Setup
 
-# Services neu starten
+Falls du vom alten Setup (mit gemeinsamem Proxy) migrierst:
+
+```bash
+# Alle alten Services stoppen
+cd /opt/finpath/ops
+docker compose -f docker-compose.proxy.yml down 2>/dev/null || true
+docker compose -f docker-compose.dev.yml down
+docker compose -f docker-compose.prod.yml down
+
+# Alte Container und Netzwerke aufräumen
+docker rm -f finpath-proxy 2>/dev/null || true
+docker network rm finpath-net 2>/dev/null || true
+
+# Neue Services starten
 docker compose -f docker-compose.dev.yml up -d
 docker compose -f docker-compose.prod.yml up -d
 ```
+
+## Vorteile dieser Architektur
+
+1. **Unabhängigkeit**: DEV kann down sein ohne PROD zu beeinflussen
+2. **Isolation**: Separate Netzwerke verhindern versehentliche Kommunikation
+3. **Einfaches Debugging**: Jeder Proxy hat nur seine eigenen Upstreams
+4. **Flexibilität**: Du kannst nur DEV oder nur PROD laufen lassen
+5. **Klare Trennung**: Keine geteilten Ressourcen zwischen Environments
 
 ## GitHub Secrets
 
