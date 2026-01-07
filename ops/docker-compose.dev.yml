@@ -4,7 +4,6 @@ services:
     container_name: finpath-backend-dev
     env_file: ./environments/dev.env
     environment:
-      # Spring Boot profile
       SPRING_PROFILES_ACTIVE: dev
     expose:
       - "9080"
