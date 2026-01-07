@@ -21,10 +21,10 @@ export class FinanceSummaryComponent implements OnInit {
     this.financialSummaryService.getFinancialSummary()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (data) => {
+        next: (data: any) => {
           this.financialSummaryData = data;
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error fetching Financial Summary data:', error);
         }
       });

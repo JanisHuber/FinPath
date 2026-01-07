@@ -22,6 +22,8 @@ services:
     environment:
       # Spring Boot profile
       SPRING_PROFILES_ACTIVE: prd
+      # Database connection (read from prod.env)
+      JDBC_URL: ${DB_URL}
       # JVM Options for production
       JAVA_OPTS: "-Xmx512m -Xms256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
     expose:
@@ -30,7 +32,15 @@ services:
       - finpath-net
     restart: always
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9080/actuator/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:9080/actuator/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -38,10 +48,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
+          cpus: "1.0"
           memory: 768M
         reservations:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 512M
 
   frontend-web-prod:
