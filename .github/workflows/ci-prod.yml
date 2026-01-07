@@ -84,7 +84,7 @@ jobs:
           context: ./apps/finpath-backend
           file: ./apps/finpath-backend/Dockerfile
           push: true
-          platforms: linux/amd64
+          platforms: linux/arm64
           tags: ${{ steps.meta_backend.outputs.tags }}
           labels: ${{ steps.meta_backend.outputs.labels }}
           cache-from: type=gha,scope=backend-prod
@@ -140,7 +140,7 @@ jobs:
           context: ./apps/finpath-frontend-web
           file: ./apps/finpath-frontend-web/Dockerfile
           push: true
-          platforms: linux/amd64
+          platforms: linux/arm64
           tags: ${{ steps.meta_web.outputs.tags }}
           labels: ${{ steps.meta_web.outputs.labels }}
           cache-from: type=gha,scope=frontend-web-prod
@@ -166,6 +166,7 @@ jobs:
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
           script: |
+            sudo chown -R $USER:$USER /opt/finpath
             cd /opt/finpath
             git config --global --add safe.directory /opt/finpath
             git pull origin prod
