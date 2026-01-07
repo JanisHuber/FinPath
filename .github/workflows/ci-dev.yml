@@ -167,6 +167,7 @@ jobs:
           key: ${{ secrets.HETZNER_SSH_KEY }}
           script: |
             cd /opt/finpath
+            git config --global --add safe.directory /opt/finpath
             git pull origin dev
             cd ops
             docker compose -f docker-compose.dev.yml pull

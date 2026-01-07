@@ -70,7 +70,7 @@ jobs:
         with:
           images: ${{ env.IMAGE_PREFIX }}-backend
           tags: |
-            type=raw,value=latest
+            type=raw,value=prod
             type=sha
           labels: |
             org.opencontainers.image.title=finpath-backend
@@ -98,7 +98,7 @@ jobs:
           subject-digest: ${{ steps.build_backend.outputs.digest }}
           push-to-registry: true
 
-  build-frontend:
+  build-frontend-web:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -120,44 +120,44 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Meta (frontend)
-        id: meta_frontend
+      - name: Meta (frontend web)
+        id: meta_web
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMAGE_PREFIX }}-frontend
+          images: ${{ env.IMAGE_PREFIX }}-frontend-web
           tags: |
-            type=raw,value=latest
+            type=raw,value=prod
             type=sha
           labels: |
-            org.opencontainers.image.title=finpath-frontend
+            org.opencontainers.image.title=finpath-frontend-web
             org.opencontainers.image.source=${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
 
-      - name: Build & Push (frontend)
-        id: build_frontend
+      - name: Build & Push (frontend web)
+        id: build_web
         uses: docker/build-push-action@v6
         with:
           context: ./apps/finpath-frontend-web
           file: ./apps/finpath-frontend-web/Dockerfile
           push: true
           platforms: linux/amd64
-          tags: ${{ steps.meta_frontend.outputs.tags }}
-          labels: ${{ steps.meta_frontend.outputs.labels }}
-          cache-from: type=gha,scope=frontend-prod
-          cache-to: type=gha,mode=max,scope=frontend-prod
+          tags: ${{ steps.meta_web.outputs.tags }}
+          labels: ${{ steps.meta_web.outputs.labels }}
+          cache-from: type=gha,scope=frontend-web-prod
+          cache-to: type=gha,mode=max,scope=frontend-web-prod
           provenance: mode=min
 
-      - name: Attest frontend image
+      - name: Attest web image
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: ${{ env.IMAGE_PREFIX }}-frontend
-          subject-digest: ${{ steps.build_frontend.outputs.digest }}
+          subject-name: ${{ env.IMAGE_PREFIX }}-frontend-web
+          subject-digest: ${{ steps.build_web.outputs.digest }}
           push-to-registry: true
 
   # ========== DEPLOY (after all builds complete) ==========
   deploy:
     runs-on: ubuntu-latest
-    needs: [build-backend, build-frontend]
+    needs: [build-backend, build-frontend-web]
     steps:
       - name: Deploy to Hetzner PROD
         uses: appleboy/ssh-action@v1.2.0
@@ -167,7 +167,8 @@ jobs:
           key: ${{ secrets.HETZNER_SSH_KEY }}
           script: |
             cd /opt/finpath
-            git pull origin main
+            git config --global --add safe.directory /opt/finpath
+            git pull origin prod
             cd ops
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d
