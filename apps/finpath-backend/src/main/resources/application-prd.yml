@@ -1,0 +1,29 @@
+# Production Profile
+
+spring:
+  jpa:
+    show-sql: false
+
+server:
+  error:
+    include-message: never
+    include-stacktrace: never
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/plain
+
+# Actuator - Minimal exposure
+management:
+  endpoint:
+    health:
+      show-details: never
+
+# CORS - Production domain only
+cors:
+  allowed-origins: https://css-appli24.com
+
+# Logging
+logging:
+  level:
+    root: WARN
+    ch.finpath: INFO
