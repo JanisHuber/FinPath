@@ -1,18 +1,31 @@
 # Minimales Deployment Setup
 
-Einfaches Deployment ohne HTTPS, SSL-Zertifikate oder Cloudflare.
+Einfaches Deployment ohne HTTPS oder SSL-Zertifikate.
 
 ## Architektur
 
-- **Separate Proxies**: Jedes Environment hat seinen eigenen Nginx-Proxy
-- **DEV Environment**: Eigenes Netzwerk, läuft auf Port 8080
-- **PROD Environment**: Eigenes Netzwerk, läuft auf Port 80
+- **Gemeinsamer Reverse Proxy**: Ein Nginx-Proxy routet basierend auf Domain-Namen
+- **Domain-basiertes Routing**:
+  - `dev.css-appli24.com` → DEV Environment
+  - `css-appli24.com` → PROD Environment
+- **Ein Port (80)**: Alle Anfragen kommen über Port 80
+- **Shared Network**: Alle Container im gleichen `finpath-net` Netzwerk
+- **Unabhängige Deployments**: DEV und PROD können separat deployed werden
 - **Automatisches Deployment**: Push auf `dev` oder `prod` Branch triggert Build & Deploy
-- **Vollständige Isolation**: Dev und Prod sind komplett unabhängig
 
 ## Ersteinrichtung auf Hetzner Server
 
-### 1. Repository klonen
+### 1. DNS-Einträge konfigurieren
+
+Stelle sicher, dass deine Domains auf die Hetzner Server IP zeigen:
+
+```
+A Record: dev.css-appli24.com → <HETZNER_IP>
+A Record: css-appli24.com → <HETZNER_IP>
+A Record: www.css-appli24.com → <HETZNER_IP>
+```
+
+### 2. Repository klonen
 
 ```bash
 cd /opt
@@ -20,7 +33,7 @@ git clone https://github.com/janishuber/FinPath.git finpath
 cd finpath
 ```
 
-### 2. Environment-Dateien erstellen
+### 3. Environment-Dateien erstellen
 
 ```bash
 cd ops/environments
@@ -40,28 +53,36 @@ DB_PASSWORD=your-db-password
 EOF
 ```
 
-### 3. GHCR Login (für private Images)
+### 4. GHCR Login (für private Images)
 
 ```bash
 echo "YOUR_GITHUB_TOKEN" | docker login ghcr.io -u janishuber --password-stdin
 ```
 
-### 4. Services starten
+### 5. Docker-Netzwerk erstellen
+
+```bash
+docker network create finpath-net
+```
+
+### 6. Proxy starten (einmalig)
 
 ```bash
 cd /opt/finpath/ops
+docker compose -f docker-compose.proxy.yml up -d
+```
 
+Der Proxy läuft permanent und routet Traffic basierend auf dem Domain-Namen.
+
+### 7. Environments starten
+
+```bash
 # DEV Environment starten
 docker compose -f docker-compose.dev.yml up -d
 
-# PROD Environment starten (optional, unabhängig von DEV)
+# PROD Environment starten
 docker compose -f docker-compose.prod.yml up -d
 ```
-
-Jedes Environment:
-- Erstellt sein eigenes Docker-Netzwerk automatisch
-- Startet seinen eigenen Proxy
-- Ist komplett unabhängig vom anderen Environment
 
 ## Deployment Workflow
 
@@ -100,47 +121,58 @@ docker compose -f docker-compose.prod.yml up -d
 
 ## Zugriff auf die Anwendungen
 
-- **DEV**: http://your-server-ip:8080
-- **PROD**: http://your-server-ip
+- **DEV**: http://dev.css-appli24.com
+- **PROD**: http://css-appli24.com
+- **Direct IP**: Wird automatisch auf PROD weitergeleitet
 
 ## Nützliche Befehle
 
 ### Logs anschauen
 
 ```bash
-# DEV (alle Services inkl. Proxy)
+# DEV (Backend und Frontend)
 docker compose -f docker-compose.dev.yml logs -f
 
-# PROD (alle Services inkl. Proxy)
+# PROD (Backend und Frontend)
 docker compose -f docker-compose.prod.yml logs -f
 
-# Nur Proxy
-docker logs finpath-proxy-dev -f
-docker logs finpath-proxy-prod -f
+# Proxy
+docker compose -f docker-compose.proxy.yml logs -f
+docker logs finpath-proxy -f
 ```
 
 ### Services neustarten
 
 ```bash
-# DEV (inkl. Proxy)
+# DEV
 docker compose -f docker-compose.dev.yml restart
 
-# PROD (inkl. Proxy)
+# PROD
 docker compose -f docker-compose.prod.yml restart
 
-# Nur Proxy neustarten
-docker restart finpath-proxy-dev
-docker restart finpath-proxy-prod
+# Proxy
+docker compose -f docker-compose.proxy.yml restart
+```
+
+### Nginx-Konfiguration neu laden
+
+```bash
+# Nach Änderungen an nginx.conf
+docker exec finpath-proxy nginx -t  # Konfiguration testen
+docker exec finpath-proxy nginx -s reload  # Neu laden ohne Downtime
 ```
 
 ### Services stoppen
 
 ```bash
-# DEV komplett stoppen
+# DEV stoppen (Proxy läuft weiter)
 docker compose -f docker-compose.dev.yml down
 
-# PROD komplett stoppen
+# PROD stoppen (Proxy läuft weiter)
 docker compose -f docker-compose.prod.yml down
+
+# Proxy stoppen (selten nötig)
+docker compose -f docker-compose.proxy.yml down
 ```
 
 ### Status prüfen
@@ -155,8 +187,8 @@ docker ps | grep dev
 # Nur PROD Container
 docker ps | grep prod
 
-# Netzwerke anzeigen
-docker network ls
+# Netzwerk inspizieren
+docker network inspect finpath-net
 ```
 
 ### Container Shell öffnen
@@ -167,28 +199,44 @@ docker exec -it finpath-backend-dev bash
 docker exec -it finpath-backend-prod bash
 
 # Proxy
-docker exec -it finpath-proxy-dev sh
-docker exec -it finpath-proxy-prod sh
+docker exec -it finpath-proxy sh
 ```
 
 ## Troubleshooting
 
-### Proxy zeigt 502 Bad Gateway
+### 502 Bad Gateway
 
 Prüfe ob die Backend/Frontend Services laufen:
 
 ```bash
-# DEV
-docker compose -f docker-compose.dev.yml ps
-
-# PROD
-docker compose -f docker-compose.prod.yml ps
+docker ps | grep finpath
 ```
 
-Wenn Services nicht laufen, neu starten:
+Prüfe Proxy-Logs:
 
 ```bash
-docker compose -f docker-compose.dev.yml restart
+docker logs finpath-proxy --tail 50
+```
+
+Wenn ein Service fehlt, starte ihn:
+
+```bash
+docker compose -f docker-compose.dev.yml up -d
+```
+
+### Domain wird nicht gefunden
+
+Prüfe DNS-Einträge:
+
+```bash
+nslookup dev.css-appli24.com
+nslookup css-appli24.com
+```
+
+Teste den Proxy direkt mit Host-Header:
+
+```bash
+curl -H "Host: dev.css-appli24.com" http://localhost
 ```
 
 ### Images können nicht gepullt werden
@@ -199,73 +247,111 @@ Login erneut bei GHCR:
 echo "YOUR_GITHUB_TOKEN" | docker login ghcr.io -u janishuber --password-stdin
 ```
 
-### Port bereits in Verwendung
+### Nginx-Konfiguration testen
+
+```bash
+docker exec finpath-proxy nginx -t
+```
+
+### Port 80 bereits in Verwendung
 
 Prüfe welcher Prozess den Port blockiert:
 
 ```bash
 sudo lsof -i :80
-sudo lsof -i :8080
 ```
 
-Falls alte Container laufen:
+Stoppe alte Services:
 
 ```bash
-# Alten Proxy stoppen
-docker stop finpath-proxy
-docker rm finpath-proxy
-
-# Altes Netzwerk entfernen
-docker network rm finpath-net
+docker stop finpath-proxy-dev finpath-proxy-prod 2>/dev/null || true
 ```
 
-### Nginx-Konfiguration testen
+### Container kann Netzwerk nicht joinen
+
+Prüfe ob Netzwerk existiert:
 
 ```bash
-# DEV Proxy Config testen
-docker exec finpath-proxy-dev nginx -t
-
-# PROD Proxy Config testen
-docker exec finpath-proxy-prod nginx -t
+docker network ls | grep finpath-net
 ```
 
-### Kompletter Neustart eines Environments
+Falls nicht, erstelle es:
 
 ```bash
-# DEV komplett neu aufsetzen
+docker network create finpath-net
+```
+
+### Kompletter Neustart
+
+```bash
 cd /opt/finpath/ops
+
+# Alles stoppen
+docker compose -f docker-compose.proxy.yml down
 docker compose -f docker-compose.dev.yml down
-docker compose -f docker-compose.dev.yml pull
+docker compose -f docker-compose.prod.yml down
+
+# Alles neu starten
+docker compose -f docker-compose.proxy.yml up -d
 docker compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 ## Migration vom alten Setup
 
-Falls du vom alten Setup (mit gemeinsamem Proxy) migrierst:
+Falls du vom Port-basierten Setup migrierst:
 
 ```bash
-# Alle alten Services stoppen
 cd /opt/finpath/ops
-docker compose -f docker-compose.proxy.yml down 2>/dev/null || true
+
+# Alte Services stoppen
 docker compose -f docker-compose.dev.yml down
 docker compose -f docker-compose.prod.yml down
 
-# Alte Container und Netzwerke aufräumen
-docker rm -f finpath-proxy 2>/dev/null || true
-docker network rm finpath-net 2>/dev/null || true
+# Alte Netzwerke entfernen
+docker network rm finpath-net-dev finpath-net-prod 2>/dev/null || true
+
+# Neues Netzwerk erstellen
+docker network create finpath-net
+
+# Code aktualisieren
+cd /opt/finpath
+git fetch origin dev
+git reset --hard origin/dev
 
 # Neue Services starten
+cd ops
+docker compose -f docker-compose.proxy.yml up -d
 docker compose -f docker-compose.dev.yml up -d
 docker compose -f docker-compose.prod.yml up -d
 ```
 
 ## Vorteile dieser Architektur
 
-1. **Unabhängigkeit**: DEV kann down sein ohne PROD zu beeinflussen
-2. **Isolation**: Separate Netzwerke verhindern versehentliche Kommunikation
-3. **Einfaches Debugging**: Jeder Proxy hat nur seine eigenen Upstreams
-4. **Flexibilität**: Du kannst nur DEV oder nur PROD laufen lassen
-5. **Klare Trennung**: Keine geteilten Ressourcen zwischen Environments
+1. **Standard Port 80**: Kein :8080 in URLs nötig
+2. **Domain-basiertes Routing**: Professionell und flexibel
+3. **Ein Proxy**: Einfacher zu verwalten, eine Konfiguration
+4. **Shared Network**: Effiziente Ressourcennutzung
+5. **Unabhängige Deployments**: DEV und PROD können separat aktualisiert werden
+6. **Skalierbar**: Einfach weitere Environments hinzufügen (staging, qa, etc.)
+7. **Keine Port-Konflikte**: Alle internen Services nutzen expose statt ports
+8. **Bereit für HTTPS**: Später einfach Let's Encrypt hinzufügen
+
+## HTTPS später hinzufügen (Optional)
+
+Wenn du später HTTPS möchtest, kannst du Certbot nutzen:
+
+```bash
+# Certbot installieren
+apt-get update
+apt-get install certbot python3-certbot-nginx
+
+# Zertifikate holen (Proxy muss laufen)
+certbot --nginx -d css-appli24.com -d www.css-appli24.com -d dev.css-appli24.com
+
+# Auto-Renewal aktivieren
+certbot renew --dry-run
+```
 
 ## GitHub Secrets
 
