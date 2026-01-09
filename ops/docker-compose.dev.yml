@@ -1,7 +1,7 @@
 services:
   backend-dev:
     image: ghcr.io/janishuber/finpath-backend:dev
-    container_name: finpath-backend-dev
+    container_name: backend-dev
     env_file: ./environments/dev.env
     environment:
       SPRING_PROFILES_ACTIVE: dev
@@ -13,7 +13,7 @@ services:
 
   frontend-web-dev:
     image: ghcr.io/janishuber/finpath-frontend-web:dev
-    container_name: finpath-frontend-web-dev
+    container_name: frontend-web-dev
     expose:
       - "80"
     depends_on:
