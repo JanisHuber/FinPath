@@ -1,0 +1,25 @@
+services:
+  backend-prod:
+    image: ghcr.io/janishuber/finpath-backend:prod
+    container_name: backend-prod
+    env_file: ./environments/prod.env
+    environment:
+      SPRING_PROFILES_ACTIVE: prd
+    expose:
+      - "9080"
+    networks:
+      - finpath-net
+    restart: always
+
+  frontend-web-prod:
+    image: ghcr.io/janishuber/finpath-frontend-web:prod
+    container_name: frontend-web-prod
+    expose:
+      - "80"
+    networks:
+      - finpath-net
+    restart: always
+
+networks:
+  finpath-net:
+    external: true

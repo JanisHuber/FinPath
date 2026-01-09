@@ -1,0 +1,10 @@
+# Ignore all actual secret files
+/secrets
+.env.dev
+.env.prd
+.env.db.dev
+.env.db.prd
+
+# Keep templates
+!.env.*.template
+!.gitignore

@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
@@ -7,6 +8,15 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./header.component.css']
 })
 
-export class Header {
-  @Output() menuClick = new EventEmitter<void>();
+export class HeaderComponent {
+  currentLang = 'de';
+
+  constructor(private translate: TranslateService) {
+    this.currentLang = this.translate.getCurrentLang() || 'de';
+  }
+
+  switchLang(lang: string) {
+    this.currentLang = lang;
+    this.translate.use(lang);
+  }
 }

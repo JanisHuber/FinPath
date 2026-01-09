@@ -1,26 +1,24 @@
-name: Build & Publish (prod)
+name: Build & Deploy (prod)
 
 on:
   push:
     branches: [ "prod" ]
 
 concurrency:
-  group: build-publish-prod
+  group: build-deploy-prod
   cancel-in-progress: false
 
 env:
   REGISTRY: ghcr.io
   IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/finpath
+  IMAGE_PREFIX_LOWER: ghcr.io/janishuber/finpath
 
 jobs:
-  build-and-push:
+  build-backend:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       packages: write
-      attestations: write
-      id-token: write
 
     steps:
       - name: Checkout
@@ -31,8 +29,9 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
+          cache: maven
 
-      - name: Build backend WAR (Maven)
+      - name: Build backend WAR
         run: mvn -B -q -DskipTests clean package --file apps/finpath-backend/pom.xml
 
       - name: Set up Docker Buildx
@@ -45,75 +44,59 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # -------- BACKEND META & BUILD --------
-      - name: Meta (backend)
-        id: meta_backend
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ${{ env.IMAGE_PREFIX }}-backend
-          tags: |
-            type=raw,value=latest
-            type=sha
-          labels: |
-            org.opencontainers.image.title=finpath-backend
-            org.opencontainers.image.source=${{ github.repository }}
-            org.opencontainers.image.revision=${{ github.sha }}
-
-      - name: Build & Push (backend)
-        id: build_backend
+      - name: Build & Push Backend
         uses: docker/build-push-action@v6
         with:
           context: ./apps/finpath-backend
           file: ./apps/finpath-backend/Dockerfile
           push: true
-          platforms: linux/amd64
-          tags: ${{ steps.meta_backend.outputs.tags }}
-          labels: ${{ steps.meta_backend.outputs.labels }}
-          cache-from: type=gha,scope=backend
-          cache-to: type=gha,mode=max,scope=backend
-          provenance: mode=min
+          platforms: linux/arm64
+          tags: ${{ env.IMAGE_PREFIX_LOWER }}-backend:prod
+          cache-from: type=gha,scope=backend-prod
+          cache-to: type=gha,mode=max,scope=backend-prod
 
-      # -------- FRONTEND META & BUILD --------
-      - name: Meta (frontend)
-        id: meta_frontend
-        uses: docker/metadata-action@v5
+  build-frontend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
         with:
-          images: |
-            ${{ env.IMAGE_PREFIX }}-frontend
-          tags: |
-            type=raw,value=latest
-            type=sha
-          labels: |
-            org.opencontainers.image.title=finpath-frontend
-            org.opencontainers.image.source=${{ github.repository }}
-            org.opencontainers.image.revision=${{ github.sha }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & Push (frontend)
-        id: build_frontend
+      - name: Build & Push Frontend
         uses: docker/build-push-action@v6
         with:
           context: ./apps/finpath-frontend-web
           file: ./apps/finpath-frontend-web/Dockerfile
           push: true
-          platforms: linux/amd64
-          tags: ${{ steps.meta_frontend.outputs.tags }}
-          labels: ${{ steps.meta_frontend.outputs.labels }}
-          cache-from: type=gha,scope=frontend
-          cache-to: type=gha,mode=max,scope=frontend
-          provenance: mode=min
+          platforms: linux/arm64
+          tags: ${{ env.IMAGE_PREFIX_LOWER }}-frontend-web:prod
+          cache-from: type=gha,scope=frontend-web-prod
+          cache-to: type=gha,mode=max,scope=frontend-web-prod
 
-      # -------- ATTESTATIONS --------
-      - name: Attest backend image
-        uses: actions/attest-build-provenance@v2
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build-backend, build-frontend]
+    steps:
+      - name: Deploy to Hetzner PROD
+        uses: appleboy/ssh-action@v1.2.0
         with:
-          subject-name: ${{ env.IMAGE_PREFIX }}-backend
-          subject-digest: ${{ steps.build_backend.outputs.digest }}
-          push-to-registry: true
-
-      - name: Attest frontend image
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.IMAGE_PREFIX }}-frontend
-          subject-digest: ${{ steps.build_frontend.outputs.digest }}
-          push-to-registry: true
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          script: |
+            cd /opt/finpath/ops
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d
