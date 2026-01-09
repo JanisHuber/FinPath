@@ -1,49 +1,25 @@
 services:
-  proxy-prod:
-    image: nginx:alpine
-    container_name: finpath-proxy-prod
-    volumes:
-      - ./nginx/nginx-prod.conf:/etc/nginx/nginx.conf:ro
-    ports:
-      - "80:80"
-    depends_on:
-      - backend-prod
-      - frontend-web-prod
-    networks:
-      - finpath-net-prod
-    restart: always
-
   backend-prod:
     image: ghcr.io/janishuber/finpath-backend:prod
-    container_name: finpath-backend-prod
+    container_name: backend-prod
     env_file: ./environments/prod.env
     environment:
       SPRING_PROFILES_ACTIVE: prd
-      JAVA_OPTS: "-Xmx512m -Xms256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
     expose:
       - "9080"
     networks:
-      - finpath-net-prod
+      - finpath-net
     restart: always
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9080/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   frontend-web-prod:
     image: ghcr.io/janishuber/finpath-frontend-web:prod
-    container_name: finpath-frontend-web-prod
+    container_name: frontend-web-prod
     expose:
       - "80"
-    depends_on:
-      - backend-prod
     networks:
-      - finpath-net-prod
+      - finpath-net
     restart: always
 
 networks:
-  finpath-net-prod:
-    name: finpath-net-prod
-    driver: bridge
+  finpath-net:
+    external: true

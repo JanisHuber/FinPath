@@ -1,42 +1,25 @@
 services:
-  proxy-dev:
-    image: nginx:alpine
-    container_name: finpath-proxy-dev
-    volumes:
-      - ./nginx/nginx-dev.conf:/etc/nginx/nginx.conf:ro
-    ports:
-      - "8080:80"
-    depends_on:
-      - backend-dev
-      - frontend-web-dev
-    networks:
-      - finpath-net-dev
-    restart: always
-
   backend-dev:
     image: ghcr.io/janishuber/finpath-backend:dev
-    container_name: finpath-backend-dev
+    container_name: backend-dev
     env_file: ./environments/dev.env
     environment:
       SPRING_PROFILES_ACTIVE: dev
     expose:
       - "9080"
     networks:
-      - finpath-net-dev
+      - finpath-net
     restart: always
 
   frontend-web-dev:
     image: ghcr.io/janishuber/finpath-frontend-web:dev
-    container_name: finpath-frontend-web-dev
+    container_name: frontend-web-dev
     expose:
       - "80"
-    depends_on:
-      - backend-dev
     networks:
-      - finpath-net-dev
+      - finpath-net
     restart: always
 
 networks:
-  finpath-net-dev:
-    name: finpath-net-dev
-    driver: bridge
+  finpath-net:
+    external: true
