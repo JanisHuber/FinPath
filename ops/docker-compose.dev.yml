@@ -16,8 +16,6 @@ services:
     container_name: frontend-web-dev
     expose:
       - "80"
-    depends_on:
-      - backend-dev
     networks:
       - finpath-net
     restart: always
