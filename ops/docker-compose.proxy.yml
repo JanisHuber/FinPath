@@ -1,7 +1,7 @@
 services:
-  reverse-proxy:
+  proxy:
     image: nginx:alpine
-    container_name: finpath-proxy
+    container_name: proxy
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
