@@ -13,4 +13,4 @@ services:
 networks:
   finpath-net:
     name: finpath-net
-    driver: bridge
+    external: true
