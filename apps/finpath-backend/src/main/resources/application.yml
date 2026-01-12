@@ -5,7 +5,6 @@ spring:
   datasource:
     url: ${JDBC_URL}
     driver-class-name: org.postgresql.Driver
-    # Hikari Connection Pool - optimiert für Supabase/PgBouncer Session Mode
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
@@ -14,19 +13,16 @@ spring:
       max-lifetime: 1200000
       leak-detection-threshold: 60000
 
-  # JPA/Hibernate Configuration
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
     open-in-view: false
 
-# Server Configuration
 server:
   port: 9080
   shutdown: graceful
 
-# Actuator Configuration
 management:
   endpoints:
     web:
@@ -37,13 +33,11 @@ management:
     health:
       show-details: when-authorized
   health:
-    # DB Health Check weniger aggressive für PgBouncer
     db:
       enabled: true
     defaults:
       enabled: true
 
-# Logging Configuration
 logging:
   level:
     root: INFO
