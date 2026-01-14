@@ -1,6 +1,6 @@
 package ch.finpath.controller;
 
-import ch.finpath.repository.DatabaseCheckRepository;
+import ch.finpath.persistence.profiles.ProfilesRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,7 +20,7 @@ class DatabaseControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private DatabaseCheckRepository repository;
+    private ProfilesRepository repository;
 
     @Test
     void testDatabase_ShouldReturnSuccess() throws Exception {
