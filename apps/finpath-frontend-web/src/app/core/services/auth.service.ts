@@ -9,7 +9,10 @@ import { BehaviorSubject, from, Observable } from 'rxjs';
 export class AuthService {
   private supabase: SupabaseClient;
   private currentUserSubject: BehaviorSubject<User | null>;
+  private initializedSubject = new BehaviorSubject<boolean>(false);
+
   public currentUser$: Observable<User | null>;
+  public isInitialized$ = this.initializedSubject.asObservable();
 
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
@@ -22,10 +25,16 @@ export class AuthService {
   private async initializeAuth() {
     const { data } = await this.supabase.auth.getSession();
     this.currentUserSubject.next(data.session?.user ?? null);
+    this.initializedSubject.next(true);
 
     this.supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
       this.currentUserSubject.next(session?.user ?? null);
     });
+  }
+
+  async getAccessToken(): Promise<string | null> {
+    const { data } = await this.supabase.auth.getSession();
+    return data.session?.access_token ?? null;
   }
 
   register(email: string, password: string, username: string): Observable<AuthResponse> {
