@@ -32,8 +32,17 @@ export class AuthService {
   }
 
   private async initializeAuth() {
-    const { data } = await this.supabase.auth.getSession();
-    this.currentUserSubject.next(data.session?.user ?? null);
+    // Verwende getUser() statt getSession() für serverseitige Validierung
+    // getSession() liest nur den lokalen Storage, getUser() validiert gegen Supabase
+    const { data: { user }, error } = await this.supabase.auth.getUser();
+
+    if (error || !user) {
+      // Bei Fehler (z.B. User gelöscht) Session aufräumen
+      await this.supabase.auth.signOut();
+      this.currentUserSubject.next(null);
+    } else {
+      this.currentUserSubject.next(user);
+    }
     this.initializedSubject.next(true);
 
     this.supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
