@@ -1,9 +1,11 @@
 package ch.finpath.api;
 
+import ch.finpath.api.dto.CreateProfileRequest;
 import ch.finpath.api.dto.ProfileDto;
 import ch.finpath.persistence.profiles.ProfileEntity;
 import ch.finpath.persistence.profiles.ProfilesRepository;
 import ch.finpath.security.AuthenticatedUser;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,7 +36,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<ProfileDto> createProfile(
             @AuthenticationPrincipal AuthenticatedUser user,
-            @RequestBody CreateProfileRequest request
+            @Valid @RequestBody CreateProfileRequest request
     ) {
         if (profilesRepository.existsById(user.id())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Profile already exists");
@@ -47,6 +49,4 @@ public class UserController {
                 .status(HttpStatus.CREATED)
                 .body(new ProfileDto(saved.getDisplayName(), saved.getId()));
     }
-
-    public record CreateProfileRequest(String displayName) {}
 }

@@ -9,18 +9,21 @@
         </div>
       }
 
-      <form (ngSubmit)="onSubmit()" class="space-y-4">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
         <div>
           <label for="email" class="block text-sm font-medium text-slate-300 mb-1">E-Mail</label>
           <input
             type="email"
             id="email"
-            [(ngModel)]="email"
-            name="email"
-            required
-            class="w-full px-4 py-2 rounded-lg bg-bg border border-slate-700 text-slate-200 focus:outline-none focus:border-slate-500"
+            formControlName="email"
+            class="w-full px-4 py-2 rounded-lg bg-bg border text-slate-200 focus:outline-none focus:border-slate-500"
+            [class.border-red-500]="f['email'].touched && f['email'].invalid"
+            [class.border-slate-700]="!(f['email'].touched && f['email'].invalid)"
             placeholder="deine@email.ch"
           />
+          @if (getFieldError('email')) {
+            <p class="mt-1 text-sm text-red-400">{{ getFieldError('email') }}</p>
+          }
         </div>
 
         <div>
@@ -28,12 +31,15 @@
           <input
             type="password"
             id="password"
-            [(ngModel)]="password"
-            name="password"
-            required
-            class="w-full px-4 py-2 rounded-lg bg-bg border border-slate-700 text-slate-200 focus:outline-none focus:border-slate-500"
+            formControlName="password"
+            class="w-full px-4 py-2 rounded-lg bg-bg border text-slate-200 focus:outline-none focus:border-slate-500"
+            [class.border-red-500]="f['password'].touched && f['password'].invalid"
+            [class.border-slate-700]="!(f['password'].touched && f['password'].invalid)"
             placeholder="Passwort"
           />
+          @if (getFieldError('password')) {
+            <p class="mt-1 text-sm text-red-400">{{ getFieldError('password') }}</p>
+          }
         </div>
 
         <button

@@ -2,24 +2,33 @@ import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
+import { ApiError, isApiError } from '@models/api-error.models';
+
+export interface EnhancedHttpError extends HttpErrorResponse {
+  apiError?: ApiError;
+}
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      const enhancedError: EnhancedHttpError = error;
+
+      // Parse API error from response body
+      if (error.error && isApiError(error.error)) {
+        enhancedError.apiError = error.error;
+      }
+
       if (error.status === 401) {
         router.navigate(['/login']);
       } else if (error.status === 403) {
         router.navigate(['/forbidden']);
       } else if (error.status === 500) {
-        console.error('Serverfehler:', error.message);
+        console.error('Server error:', enhancedError.apiError?.message || error.message);
       }
 
-      // Optional: Nutzerfreundliche Meldung
-      // toastService.show('Etwas ist schiefgelaufen');
-
-      return throwError(() => error);
+      return throwError(() => enhancedError);
     })
   );
 };
