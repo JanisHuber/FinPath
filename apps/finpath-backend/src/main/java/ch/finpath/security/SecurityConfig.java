@@ -27,14 +27,11 @@ public class SecurityConfig {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
-    private String jwkSetUri;
-
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuerUri;
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
@@ -43,7 +40,7 @@ public class SecurityConfig {
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
-                                .decoder(jwtDecoder())
+                                .decoder(jwtDecoder)
                                 .jwtAuthenticationConverter(this::convertJwtToAuthentication)
                         )
                 )
@@ -52,25 +49,26 @@ public class SecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder() {
-        log.info("Configuring JWT decoder with JWK Set URI: {}", jwkSetUri);
         log.info("Expected issuer: {}", issuerUri);
 
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
+        // Build decoder from issuer metadata (will discover jwks_uri automatically)
+        NimbusJwtDecoder decoder = NimbusJwtDecoder.withIssuerLocation(issuerUri).build();
 
         OAuth2TokenValidator<Jwt> withIssuer = new JwtIssuerValidator(issuerUri);
         OAuth2TokenValidator<Jwt> withTimestamp = new JwtTimestampValidator();
 
-        jwtDecoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(withTimestamp, withIssuer));
-
-        return jwtDecoder;
+        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(withIssuer, withTimestamp));
+        return decoder;
     }
 
     private UsernamePasswordAuthenticationToken convertJwtToAuthentication(Jwt jwt) {
         log.debug("Converting JWT to authentication. Subject: {}, Email: {}",
                 jwt.getSubject(), jwt.getClaimAsString("email"));
-        var userId = UUID.fromString(jwt.getSubject());
-        var email = jwt.getClaimAsString("email");
+
+        UUID userId = UUID.fromString(jwt.getSubject());
+        String email = jwt.getClaimAsString("email");
         var principal = new AuthenticatedUser(userId, email);
+
         return new UsernamePasswordAuthenticationToken(principal, "n/a", List.of());
     }
 }
