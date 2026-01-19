@@ -30,6 +30,7 @@ public class UserController {
     public ProfileDto me(@AuthenticationPrincipal AuthenticatedUser user) {
         ProfileEntity entity = profilesRepository.findById(user.id())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found"));
+        System.out.println(entity);
         return new ProfileDto(entity.getDisplayName(), entity.getId());
     }
 

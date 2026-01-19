@@ -14,4 +14,8 @@ import { AsyncPipe } from '@angular/common';
 export class DashboardPage {
   private authService = inject(AuthService);
   profile$ = this.authService.currentProfile$;
+
+  ngOnInit(): void {
+    console.log(this.profile$);
+  }
 }
