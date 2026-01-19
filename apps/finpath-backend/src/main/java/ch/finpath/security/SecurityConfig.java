@@ -18,9 +18,6 @@ import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,8 +27,8 @@ public class SecurityConfig {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
-    @Value("${supabase.jwt.secret}")
-    private String jwtSecret;
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    private String jwkSetUri;
 
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuerUri;
@@ -55,16 +52,10 @@ public class SecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder() {
-        log.info("Configuring JWT decoder with HS256 secret for Supabase");
+        log.info("Configuring JWT decoder with JWK Set URI: {}", jwkSetUri);
         log.info("Expected issuer: {}", issuerUri);
 
-        // Supabase verwendet HS256 (symmetrischer Key) für JWT-Signierung
-        SecretKey secretKey = new SecretKeySpec(
-                jwtSecret.getBytes(StandardCharsets.UTF_8),
-                "HmacSHA256"
-        );
-
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKey).build();
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
 
         OAuth2TokenValidator<Jwt> withIssuer = new JwtIssuerValidator(issuerUri);
         OAuth2TokenValidator<Jwt> withTimestamp = new JwtTimestampValidator();

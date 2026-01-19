@@ -24,11 +24,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: https://vsrlwxdxxzrwqqakqyzg.supabase.co/auth/v1
-
-# Supabase JWT Secret - findest du in Supabase Dashboard unter Settings > API > JWT Secret
-supabase:
-  jwt:
-    secret: ${SUPABASE_JWT_SECRET}
+          jwk-set-uri: https://vsrlwxdxxzrwqqakqyzg.supabase.co/auth/v1/.well-known/jwks.json
 
 server:
   port: 9080
