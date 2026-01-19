@@ -1,21 +1,40 @@
 package ch.finpath.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtIssuerValidator;
+import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
+
+    @Value("${supabase.jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    private String issuerUri;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -26,12 +45,38 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(this::convertJwtToAuthentication))
+                        .jwt(jwt -> jwt
+                                .decoder(jwtDecoder())
+                                .jwtAuthenticationConverter(this::convertJwtToAuthentication)
+                        )
                 )
                 .build();
     }
 
+    @Bean
+    JwtDecoder jwtDecoder() {
+        log.info("Configuring JWT decoder with HS256 secret for Supabase");
+        log.info("Expected issuer: {}", issuerUri);
+
+        // Supabase verwendet HS256 (symmetrischer Key) für JWT-Signierung
+        SecretKey secretKey = new SecretKeySpec(
+                jwtSecret.getBytes(StandardCharsets.UTF_8),
+                "HmacSHA256"
+        );
+
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKey).build();
+
+        OAuth2TokenValidator<Jwt> withIssuer = new JwtIssuerValidator(issuerUri);
+        OAuth2TokenValidator<Jwt> withTimestamp = new JwtTimestampValidator();
+
+        jwtDecoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(withTimestamp, withIssuer));
+
+        return jwtDecoder;
+    }
+
     private UsernamePasswordAuthenticationToken convertJwtToAuthentication(Jwt jwt) {
+        log.debug("Converting JWT to authentication. Subject: {}, Email: {}",
+                jwt.getSubject(), jwt.getClaimAsString("email"));
         var userId = UUID.fromString(jwt.getSubject());
         var email = jwt.getClaimAsString("email");
         var principal = new AuthenticatedUser(userId, email);

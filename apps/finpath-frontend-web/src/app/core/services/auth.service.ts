@@ -42,26 +42,39 @@ export class AuthService {
       this.currentUserSubject.next(null);
     } else {
       this.currentUserSubject.next(user);
+      // Initial Profil laden für validierten User
+      this.loadProfile();
     }
     this.initializedSubject.next(true);
 
-    this.supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
-      this.currentUserSubject.next(session?.user ?? null);
-      if (session?.user) {
-        this.http.get<Profile>(`${environment.apiBaseUrl}/me`).subscribe({
-          next: (profile) => {
-            this.currentProfileSubject.next(profile);
-            console.log("User Profile loaded: " + JSON.stringify(profile));
-          },
-          error: (err) => console.error("Failed to load profile:", err)
-        });
-      } else {
+    // Auth State Change Handler - nur auf SIGNED_IN und SIGNED_OUT reagieren
+    this.supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
+      // Nur relevante Events verarbeiten
+      if (event === 'SIGNED_IN' && session?.user) {
+        this.currentUserSubject.next(session.user);
+        this.loadProfile();
+      } else if (event === 'SIGNED_OUT') {
+        this.currentUserSubject.next(null);
         this.currentProfileSubject.next(null);
       }
     });
   }
 
+  private loadProfile() {
+    this.http.get<Profile>(`${environment.apiBaseUrl}/me`).subscribe({
+      next: (profile) => {
+        this.currentProfileSubject.next(profile);
+        console.log('User Profile loaded:', profile);
+      },
+      error: (err) => console.error('Failed to load profile:', err)
+    });
+  }
+
   async getAccessToken(): Promise<string | null> {
+    // Nur Token zurückgeben wenn wir einen validierten User haben
+    if (!this.currentUserSubject.value) {
+      return null;
+    }
     const { data } = await this.supabase.auth.getSession();
     return data.session?.access_token ?? null;
   }

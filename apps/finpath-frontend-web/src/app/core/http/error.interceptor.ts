@@ -20,7 +20,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         enhancedError.apiError = error.error;
       }
 
-      if (error.status === 401) {
+      // Don't redirect on 401 for profile/auth-related API calls to avoid redirect loops
+      const isProfileRequest = req.url.includes('/api/me');
+
+      if (error.status === 401 && !isProfileRequest) {
         router.navigate(['/login']);
       } else if (error.status === 403) {
         router.navigate(['/forbidden']);

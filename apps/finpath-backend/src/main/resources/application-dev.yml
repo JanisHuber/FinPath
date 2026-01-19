@@ -18,3 +18,5 @@ logging:
     root: INFO
     ch.finpath: DEBUG
     org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: TRACE
