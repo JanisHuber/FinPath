@@ -11,7 +11,7 @@ server:
     include-stacktrace: always
 
 cors:
-  allowed-origins: https://dev.css-appli24.com
+  allowed-origins: http://localhost:4200
 
 logging:
   level:

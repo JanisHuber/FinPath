@@ -33,6 +33,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
         return http
+                .cors(cors -> {})
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/**").permitAll()
@@ -64,6 +65,7 @@ public class SecurityConfig {
     private UsernamePasswordAuthenticationToken convertJwtToAuthentication(Jwt jwt) {
         log.debug("Converting JWT to authentication. Subject: {}, Email: {}",
                 jwt.getSubject(), jwt.getClaimAsString("email"));
+        log.debug("All JWT claims: {}", jwt.getClaims());
 
         UUID userId = UUID.fromString(jwt.getSubject());
         String email = jwt.getClaimAsString("email");
