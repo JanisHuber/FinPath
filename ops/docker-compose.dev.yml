@@ -2,7 +2,7 @@ services:
   backend-dev:
     image: ghcr.io/janishuber/finpath-backend:dev
     container_name: backend-dev
-    env_file: ./environments/dev.env
+    env_file: ./environments/.env.dev
     environment:
       SPRING_PROFILES_ACTIVE: dev
     expose:
