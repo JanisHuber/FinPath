@@ -69,7 +69,8 @@ public class SecurityConfig {
 
         UUID userId = UUID.fromString(jwt.getSubject());
         String email = jwt.getClaimAsString("email");
-        var principal = new AuthenticatedUser(userId, email);
+        String displayName = jwt.getClaimAsString("username");
+        var principal = new AuthenticatedUser(userId, email, displayName);
 
         return new UsernamePasswordAuthenticationToken(principal, "n/a", List.of());
     }
