@@ -47,7 +47,6 @@ finpath-firebase*.json
 *.swp
 *.swo
 placeholder.txt
-/whatchatz-frontend/src/environments/environment.ts
 
 # === Own ===
 /ops/secrets/*
