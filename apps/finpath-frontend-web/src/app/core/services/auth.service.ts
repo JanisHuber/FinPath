@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { environment } from '@env';
+import { environment } from '../../../environments/environment';
 import { AuthChangeEvent, AuthResponse, createClient, Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { BehaviorSubject, from, Observable } from 'rxjs';
-import { Profile } from '@models/profile.models'
+import { Profile } from '../models/profile.models';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -32,24 +32,18 @@ export class AuthService {
   }
 
   private async initializeAuth() {
-    // Verwende getUser() statt getSession() für serverseitige Validierung
-    // getSession() liest nur den lokalen Storage, getUser() validiert gegen Supabase
     const { data: { user }, error } = await this.supabase.auth.getUser();
 
     if (error || !user) {
-      // Bei Fehler (z.B. User gelöscht) Session aufräumen
       await this.supabase.auth.signOut();
       this.currentUserSubject.next(null);
     } else {
       this.currentUserSubject.next(user);
-      // Initial Profil laden für validierten User
       this.loadProfile();
     }
     this.initializedSubject.next(true);
 
-    // Auth State Change Handler - nur auf SIGNED_IN und SIGNED_OUT reagieren
     this.supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
-      // Nur relevante Events verarbeiten
       if (event === 'SIGNED_IN' && session?.user) {
         this.currentUserSubject.next(session.user);
         this.loadProfile();
@@ -71,7 +65,6 @@ export class AuthService {
   }
 
   async getAccessToken(): Promise<string | null> {
-    // Nur Token zurückgeben wenn wir einen validierten User haben
     if (!this.currentUserSubject.value) {
       return null;
     }
