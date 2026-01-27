@@ -31,17 +31,9 @@ Thumbs.db
 # === Docker ===
 .dockerignore
 
-# === Firebase / Secrets ===
-# Nur sensible JSON-Dateien ignorieren
-firebase-debug.log
-finpath-firebase*.json
+# === Secrets ===
 *.key
 *.pem
-
-# === Database dumps, local crap ===
-*.sql
-*.sqlite
-*.db
 
 # === Misc ===
 *.swp
