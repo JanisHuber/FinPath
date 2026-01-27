@@ -1,0 +1,179 @@
+<div
+  class="rounded-2xl bg-bg-soft border border-slate-800/50 overflow-hidden transition hover:border-slate-700 cursor-pointer"
+  (click)="toggleDetails()"
+>
+  <div class="p-6">
+    <!-- Header -->
+    <div class="flex items-start gap-4">
+      <div
+        class="shrink-0 h-12 w-12 rounded-xl flex items-center justify-center"
+        [ngClass]="getCategoryColor()"
+      >
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getCategoryIcon()" />
+        </svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <h3 class="text-lg font-semibold truncate">{{ goal.name }}</h3>
+          <span
+            class="shrink-0 px-2 py-0.5 rounded-full text-xs font-medium"
+            [ngClass]="getStatusBadgeClass()"
+          >
+            {{ 'financePath.status.' + goal.status | translate }}
+          </span>
+        </div>
+        @if (goal.description) {
+          <p class="text-sm text-slate-400 mt-1 line-clamp-2">{{ goal.description }}</p>
+        }
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          (click)="onEdit($event)"
+          class="p-2 rounded-lg hover:bg-slate-700 transition"
+          title="Edit"
+        >
+          <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </button>
+        <button
+          (click)="onDelete($event)"
+          class="p-2 rounded-lg hover:bg-red-500/20 transition"
+          title="Delete"
+        >
+          <svg class="h-4 w-4 text-slate-400 hover:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress Section -->
+    <div class="mt-6">
+      <div class="flex items-center justify-between text-sm mb-2">
+        <span class="text-slate-400">{{ 'financePath.progress' | translate }}</span>
+        <span class="font-medium">{{ goal.progressPercent | number:'1.0-0' }}%</span>
+      </div>
+      <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+        <div
+          class="h-full rounded-full transition-all duration-500"
+          [ngClass]="getProgressColor()"
+          [style.width.%]="goal.progressPercent > 100 ? 100 : goal.progressPercent"
+        ></div>
+      </div>
+      <div class="flex items-center justify-between text-sm mt-2">
+        <span class="text-slate-400">CHF {{ goal.currentAmount | number:'1.2-2' }}</span>
+        <span class="font-medium">CHF {{ goal.targetAmount | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="flex items-center gap-4 mt-4 text-sm">
+      @if (goal.deadline) {
+        <div class="flex items-center gap-1.5">
+          <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          @if (getDaysRemaining() !== null) {
+            @if (getDaysRemaining()! > 0) {
+              <span class="text-slate-400">{{ getDaysRemaining() }} {{ 'financePath.daysLeft' | translate }}</span>
+            } @else if (getDaysRemaining()! === 0) {
+              <span class="text-yellow-400">{{ 'financePath.dueToday' | translate }}</span>
+            } @else {
+              <span class="text-red-400">{{ 'financePath.overdue' | translate }}</span>
+            }
+          }
+        </div>
+      }
+      @if (goal.milestones.length > 0) {
+        <div class="flex items-center gap-1.5">
+          <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          </svg>
+          <span class="text-slate-400">{{ getAchievedMilestonesCount() }}/{{ goal.milestones.length }}</span>
+        </div>
+      }
+      @if (goal.estimatedCompletionDate) {
+        <div class="flex items-center gap-1.5">
+          <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span class="text-slate-400">{{ 'financePath.estimated' | translate }}: {{ formatDate(goal.estimatedCompletionDate) }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Expanded Details -->
+  @if (showDetails) {
+    <div class="border-t border-slate-800/50 p-6 bg-slate-800/20">
+      <!-- Category -->
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-sm text-slate-400">{{ 'financePath.category' | translate }}:</span>
+        <span class="text-sm font-medium">{{ 'financePath.categories.' + goal.category | translate }}</span>
+      </div>
+
+      <!-- Milestones Section -->
+      @if (goal.milestones.length > 0) {
+        <div class="mb-4">
+          <button
+            (click)="toggleMilestones(); $event.stopPropagation()"
+            class="flex items-center gap-2 text-sm font-medium mb-3"
+          >
+            <svg
+              class="h-4 w-4 transition-transform"
+              [class.rotate-90]="showMilestones"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+            {{ 'financePath.milestones' | translate }} ({{ goal.milestones.length }})
+          </button>
+
+          @if (showMilestones) {
+            <div class="space-y-2 ml-6">
+              @for (milestone of goal.milestones; track milestone.id) {
+                <div
+                  class="flex items-center gap-3 p-3 rounded-lg bg-slate-800/40"
+                  (click)="$event.stopPropagation()"
+                >
+                  <button
+                    (click)="toggleMilestoneAchieved(milestone, $event)"
+                    class="shrink-0 h-5 w-5 rounded border-2 flex items-center justify-center transition"
+                    [class.border-slate-600]="!milestone.isAchieved"
+                    [class.border-emerald-500]="milestone.isAchieved"
+                    [class.bg-emerald-500]="milestone.isAchieved"
+                  >
+                    @if (milestone.isAchieved) {
+                      <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                      </svg>
+                    }
+                  </button>
+                  <div class="flex-1 min-w-0">
+                    <p
+                      class="text-sm font-medium"
+                      [class.line-through]="milestone.isAchieved"
+                      [class.text-slate-500]="milestone.isAchieved"
+                    >
+                      {{ milestone.name }}
+                    </p>
+                    <div class="flex items-center gap-3 text-xs text-slate-400 mt-0.5">
+                      <span>CHF {{ milestone.targetAmount | number:'1.2-2' }}</span>
+                      @if (milestone.targetDate) {
+                        <span>{{ formatDate(milestone.targetDate) }}</span>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,10 +1,399 @@
 {
   "app": {
-    "title": "FinPath – Dein digitaler Finanzcoach",
+    "title": "FinPath - Dein digitaler Finanzcoach",
     "dashboard": "Dashboard",
     "finance-path": "Finanz-Fahrplan",
     "learning": "Lernen",
     "profile": "Profil",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "logout": "Abmelden",
+    "notifications": "Benachrichtigungen"
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Loschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufugen",
+    "create": "Erstellen",
+    "close": "Schliessen",
+    "confirm": "Bestatigen",
+    "back": "Zuruck",
+    "next": "Weiter",
+    "previous": "Zuruck",
+    "loading": "Wird geladen...",
+    "saving": "Speichern...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "warning": "Warnung",
+    "info": "Information",
+    "yes": "Ja",
+    "no": "Nein",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "sort": "Sortieren",
+    "all": "Alle",
+    "none": "Keine",
+    "required": "Erforderlich",
+    "optional": "Optional",
+    "retry": "Erneut versuchen"
+  },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "email": "E-Mail",
+      "emailPlaceholder": "deine@email.ch",
+      "password": "Passwort",
+      "passwordPlaceholder": "Passwort",
+      "submit": "Anmelden",
+      "loading": "Wird geladen...",
+      "noAccount": "Noch kein Konto?",
+      "register": "Registrieren",
+      "forgotPassword": "Passwort vergessen?",
+      "error": {
+        "failed": "Anmeldung fehlgeschlagen",
+        "invalidCredentials": "Ungultige Anmeldedaten"
+      }
+    },
+    "register": {
+      "title": "Registrieren",
+      "username": "Benutzername",
+      "usernamePlaceholder": "Dein Benutzername",
+      "email": "E-Mail",
+      "emailPlaceholder": "deine@email.ch",
+      "password": "Passwort",
+      "passwordPlaceholder": "Min. 8 Zeichen",
+      "confirmPassword": "Passwort bestatigen",
+      "confirmPasswordPlaceholder": "Passwort wiederholen",
+      "submit": "Registrieren",
+      "loading": "Wird erstellt...",
+      "hasAccount": "Bereits ein Konto?",
+      "login": "Anmelden",
+      "success": "Registrierung erfolgreich! Bitte bestatige deine E-Mail.",
+      "error": {
+        "failed": "Registrierung fehlgeschlagen",
+        "emailExists": "Diese E-Mail ist bereits registriert",
+        "passwordMismatch": "Passworter stimmen nicht uberein",
+        "weakPassword": "Passwort ist zu schwach"
+      }
+    },
+    "logout": {
+      "title": "Abmelden",
+      "confirm": "Mochtest du dich wirklich abmelden?",
+      "success": "Erfolgreich abgemeldet"
+    }
+  },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "email": "Ungultige E-Mail-Adresse",
+    "minLength": "Mindestens {{min}} Zeichen erforderlich",
+    "maxLength": "Maximal {{max}} Zeichen erlaubt",
+    "min": "Mindestwert ist {{min}}",
+    "max": "Maximalwert ist {{max}}",
+    "pattern": "Ungultiges Format",
+    "passwordMismatch": "Passworter stimmen nicht uberein"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Willkommen",
+    "checkIn": {
+      "title": "Finanz-Check",
+      "status": {
+        "good": "Alles im grunen Bereich",
+        "average": "Einige Punkte beachten",
+        "bad": "Handlungsbedarf"
+      },
+      "score": "Finanz-Score",
+      "recommendation": "Empfehlung"
+    },
+    "financeSummary": {
+      "title": "Finanzubersicht",
+      "monthlyIncome": "Monatliche Einnahmen",
+      "monthlyExpenses": "Monatliche Ausgaben",
+      "liquidity": "Liquiditat",
+      "netWorth": "Nettovermogen",
+      "change": "Veranderung"
+    },
+    "quickActions": {
+      "title": "Schnellaktionen",
+      "addTransaction": "Transaktion erfassen",
+      "addGoal": "Ziel hinzufugen",
+      "viewReports": "Berichte anzeigen"
+    }
+  },
+  "financePath": {
+    "title": "Finanz-Fahrplan",
+    "subtitle": "Deine finanziellen Ziele im Uberblick",
+    "addGoal": "Neues Ziel",
+    "activeGoals": "Aktive Ziele",
+    "completedGoals": "Abgeschlossene Ziele",
+    "averageProgress": "Durchschnittlicher Fortschritt",
+    "noGoals": "Noch keine Ziele vorhanden",
+    "noGoalsDescription": "Erstelle dein erstes finanzielles Ziel, um deinen Fortschritt zu verfolgen.",
+    "createFirstGoal": "Erstes Ziel erstellen",
+    "editGoal": "Ziel bearbeiten",
+    "createGoal": "Neues Ziel erstellen",
+    "progress": "Fortschritt",
+    "daysLeft": "Tage verbleibend",
+    "dueToday": "Heute fallig",
+    "overdue": "Uberfällig",
+    "milestones": "Meilensteine",
+    "estimated": "Prognose",
+    "category": "Kategorie",
+    "filter": {
+      "all": "Alle",
+      "active": "Aktiv",
+      "completed": "Abgeschlossen",
+      "paused": "Pausiert"
+    },
+    "status": {
+      "active": "Aktiv",
+      "completed": "Abgeschlossen",
+      "paused": "Pausiert",
+      "cancelled": "Abgebrochen"
+    },
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "z.B. Notgroschen aufbauen",
+      "nameRequired": "Name ist erforderlich",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Optionale Beschreibung deines Ziels",
+      "targetAmount": "Zielbetrag",
+      "targetRequired": "Zielbetrag ist erforderlich",
+      "currentAmount": "Aktueller Betrag",
+      "category": "Kategorie",
+      "deadline": "Deadline",
+      "color": "Farbe",
+      "milestones": "Meilensteine",
+      "addMilestone": "Meilenstein hinzufugen",
+      "milestoneName": "Meilenstein-Name"
+    },
+    "goals": {
+      "title": "Ziele",
+      "add": "Neues Ziel",
+      "edit": "Ziel bearbeiten",
+      "delete": "Ziel loschen",
+      "deleteConfirm": "Mochtest du dieses Ziel wirklich loschen?",
+      "name": "Name",
+      "description": "Beschreibung",
+      "targetAmount": "Zielbetrag",
+      "currentAmount": "Aktueller Betrag",
+      "deadline": "Deadline",
+      "category": "Kategorie",
+      "status": "Status",
+      "priority": "Prioritat",
+      "progress": "Fortschritt",
+      "forecast": "Prognose",
+      "noGoals": "Noch keine Ziele vorhanden"
+    },
+    "categories": {
+      "savings": "Sparen",
+      "investment": "Investition",
+      "debt_payoff": "Schuldenabbau",
+      "emergency_fund": "Notfallfonds",
+      "retirement": "Altersvorsorge",
+      "education": "Bildung",
+      "vacation": "Urlaub",
+      "other": "Sonstiges"
+    },
+    "statuses": {
+      "active": "Aktiv",
+      "completed": "Abgeschlossen",
+      "paused": "Pausiert",
+      "cancelled": "Abgebrochen"
+    }
+  },
+  "learning": {
+    "title": "Lernen",
+    "subtitle": "Finanzwissen fur dich",
+    "noModules": "Keine Module gefunden",
+    "noModulesDescription": "Es sind noch keine Lernmodule verfugbar.",
+    "summary": "Zusammenfassung",
+    "markComplete": "Als abgeschlossen markieren",
+    "alreadyCompleted": "Bereits abgeschlossen",
+    "modules": {
+      "title": "Module",
+      "all": "Alle Module",
+      "inProgress": "In Bearbeitung",
+      "completed": "Abgeschlossen",
+      "notStarted": "Nicht begonnen"
+    },
+    "categories": {
+      "basics": "Grundlagen",
+      "budgeting": "Budgetierung",
+      "investing": "Investieren",
+      "taxes": "Steuern",
+      "retirement": "Altersvorsorge",
+      "debt_management": "Schuldenmanagement",
+      "advanced": "Fortgeschritten"
+    },
+    "progress": {
+      "title": "Dein Fortschritt",
+      "completed": "{{count}} Module abgeschlossen",
+      "totalProgress": "Gesamtfortschritt"
+    },
+    "difficulty": {
+      "1": "Anfanger",
+      "2": "Leicht",
+      "3": "Mittel",
+      "4": "Fortgeschritten",
+      "5": "Experte"
+    },
+    "estimatedTime": "Geschatzte Zeit: {{minutes}} Min."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "tabs": {
+      "profile": "Profil",
+      "finances": "Finanzen",
+      "investments": "Investments",
+      "app": "App-Darstellung"
+    },
+    "profile": {
+      "title": "Profil",
+      "avatar": "Profilbild",
+      "changeAvatar": "Bild andern",
+      "removeAvatar": "Bild entfernen",
+      "displayName": "Anzeigename",
+      "email": "E-Mail",
+      "memberSince": "Mitglied seit",
+      "changePassword": "Passwort andern",
+      "currentPassword": "Aktuelles Passwort",
+      "newPassword": "Neues Passwort",
+      "confirmNewPassword": "Neues Passwort bestatigen",
+      "deleteAccount": "Konto loschen",
+      "deleteAccountWarning": "Diese Aktion kann nicht ruckgangig gemacht werden. Alle deine Daten werden unwiderruflich geloscht.",
+      "deleteAccountConfirm": "Gib 'LOSCHEN' ein, um zu bestatigen"
+    },
+    "finances": {
+      "title": "Finanzen",
+      "accounts": {
+        "title": "Konten",
+        "add": "Konto hinzufugen",
+        "edit": "Konto bearbeiten",
+        "delete": "Konto loschen",
+        "types": {
+          "invest": "Investieren",
+          "spending": "Ausgaben",
+          "save": "Sparen",
+          "custom": "Benutzerdefiniert"
+        }
+      },
+      "currency": "Wahrung",
+      "budgetPeriod": "Budget-Zeitraum"
+    },
+    "investments": {
+      "title": "Investments",
+      "riskProfile": "Risikoprofil",
+      "portfolioView": "Portfolio-Ansicht"
+    },
+    "appSettings": {
+      "title": "App-Einstellungen",
+      "language": "Sprache",
+      "languages": {
+        "de": "Deutsch",
+        "fr": "Francais",
+        "en": "English"
+      },
+      "theme": "Design",
+      "themes": {
+        "light": "Hell",
+        "dark": "Dunkel",
+        "system": "Systemeinstellung"
+      },
+      "notifications": {
+        "title": "Benachrichtigungen",
+        "inApp": "In-App Benachrichtigungen",
+        "email": "E-Mail Benachrichtigungen",
+        "push": "Push-Benachrichtigungen"
+      },
+      "privacy": {
+        "title": "Datenschutz",
+        "analytics": "Anonyme Nutzungsstatistiken",
+        "personalization": "Personalisierte Empfehlungen"
+      }
+    }
+  },
+  "accounts": {
+    "title": "Konten",
+    "balance": "Kontostand",
+    "type": "Kontotyp",
+    "add": "Konto hinzufugen",
+    "edit": "Konto bearbeiten",
+    "delete": "Konto loschen",
+    "deleteConfirm": "Mochtest du dieses Konto wirklich loschen? Alle zugehorigen Transaktionen werden ebenfalls geloscht.",
+    "types": {
+      "invest": "Investieren",
+      "spending": "Ausgaben",
+      "save": "Sparen",
+      "custom": "Benutzerdefiniert"
+    },
+    "noAccounts": "Noch keine Konten vorhanden"
+  },
+  "transactions": {
+    "title": "Transaktionen",
+    "add": "Transaktion hinzufugen",
+    "edit": "Transaktion bearbeiten",
+    "delete": "Transaktion loschen",
+    "type": "Transaktionstyp",
+    "types": {
+      "income": "Einnahme",
+      "expense": "Ausgabe",
+      "transfer": "Uberweisung"
+    },
+    "amount": "Betrag",
+    "date": "Datum",
+    "category": "Kategorie",
+    "description": "Beschreibung",
+    "account": "Konto",
+    "recurring": "Wiederkehrend",
+    "noTransactions": "Noch keine Transaktionen vorhanden"
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "markAsRead": "Als gelesen markieren",
+    "markAllAsRead": "Alle als gelesen markieren",
+    "delete": "Loschen",
+    "noNotifications": "Keine Benachrichtigungen",
+    "types": {
+      "info": "Information",
+      "warning": "Warnung",
+      "success": "Erfolg",
+      "reminder": "Erinnerung",
+      "achievement": "Erfolg freigeschaltet"
+    }
+  },
+  "family": {
+    "title": "Familie",
+    "members": "Familienmitglieder",
+    "add": "Mitglied hinzufugen",
+    "edit": "Mitglied bearbeiten",
+    "delete": "Mitglied entfernen",
+    "name": "Name",
+    "relationship": "Beziehung",
+    "birthDate": "Geburtsdatum",
+    "switchProfile": "Profil wechseln",
+    "noMembers": "Keine Familienmitglieder hinzugefugt"
+  },
+  "onboarding": {
+    "title": "Willkommen bei FinPath",
+    "subtitle": "Lass uns dein Finanzprofil einrichten",
+    "steps": {
+      "welcome": "Willkommen",
+      "income": "Einkommen",
+      "expenses": "Ausgaben",
+      "goals": "Ziele",
+      "accounts": "Konten",
+      "finish": "Fertig"
+    },
+    "skip": "Uberspringen",
+    "finish": "Fertigstellen"
+  },
+  "errors": {
+    "generic": "Ein Fehler ist aufgetreten. Bitte versuche es erneut.",
+    "network": "Netzwerkfehler. Bitte prufe deine Internetverbindung.",
+    "unauthorized": "Du bist nicht berechtigt, diese Aktion auszufuhren.",
+    "notFound": "Die angeforderte Ressource wurde nicht gefunden.",
+    "serverError": "Serverfehler. Bitte versuche es spater erneut."
   }
 }

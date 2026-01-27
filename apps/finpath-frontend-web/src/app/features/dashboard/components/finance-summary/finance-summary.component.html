@@ -1,18 +1,55 @@
-<div class="grid grid-cols-2 grid-rows-2 gap-0">
-  <div class="rounded-2xl bg-bg-soft m-3 p-4 shadow-sm border border-slate-800/50">
-    <p class="text-xs text-gray-500">Monatliches Einkommen</p>
-    <h2 class="text-xl">{{ financialSummaryData?.monthlyIncome }}</h2>
-</div>
-  <div class="rounded-2xl bg-bg-soft m-3 p-4 shadow-sm border border-slate-800/50">
-    <p class="text-xs text-gray-500">Monatliche Ausgaben</p>
-    <h2 class="text-xl">{{ financialSummaryData?.monthlyExpenses }}</h2>
+@if (financialSummaryData) {
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="rounded-xl bg-slate-800/40 p-4">
+      <p class="text-xs text-slate-400 mb-1">{{ 'dashboard.financeSummary.monthlyIncome' | translate }}</p>
+      <h2 class="text-xl font-semibold text-emerald-400">
+        CHF {{ financialSummaryData.monthlyIncome | number:'1.2-2' }}
+      </h2>
+    </div>
+    <div class="rounded-xl bg-slate-800/40 p-4">
+      <p class="text-xs text-slate-400 mb-1">{{ 'dashboard.financeSummary.monthlyExpenses' | translate }}</p>
+      <h2 class="text-xl font-semibold text-red-400">
+        CHF {{ financialSummaryData.monthlyExpenses | number:'1.2-2' }}
+      </h2>
+    </div>
+    <div class="rounded-xl bg-slate-800/40 p-4">
+      <p class="text-xs text-slate-400 mb-1">{{ 'dashboard.financeSummary.liquidity' | translate }}</p>
+      <div class="flex items-baseline gap-2">
+        <h2 class="text-xl font-semibold">CHF {{ financialSummaryData.liquidity | number:'1.2-2' }}</h2>
+        @if (financialSummaryData.liquidityRate !== 0) {
+          <span
+            class="text-xs"
+            [class.text-emerald-400]="financialSummaryData.liquidityRate > 0"
+            [class.text-red-400]="financialSummaryData.liquidityRate < 0"
+          >
+            {{ financialSummaryData.liquidityRate > 0 ? '+' : '' }}{{ financialSummaryData.liquidityRate | number:'1.1-1' }}%
+          </span>
+        }
+      </div>
+    </div>
+    <div class="rounded-xl bg-slate-800/40 p-4">
+      <p class="text-xs text-slate-400 mb-1">{{ 'dashboard.financeSummary.netWorth' | translate }}</p>
+      <div class="flex items-baseline gap-2">
+        <h2 class="text-xl font-semibold">CHF {{ financialSummaryData.netWorth | number:'1.2-2' }}</h2>
+        @if (financialSummaryData.netWorthRate !== 0) {
+          <span
+            class="text-xs"
+            [class.text-emerald-400]="financialSummaryData.netWorthRate > 0"
+            [class.text-red-400]="financialSummaryData.netWorthRate < 0"
+          >
+            {{ financialSummaryData.netWorthRate > 0 ? '+' : '' }}{{ financialSummaryData.netWorthRate | number:'1.1-1' }}%
+          </span>
+        }
+      </div>
+    </div>
   </div>
-  <div class="rounded-2xl bg-bg-soft m-3 p-4 shadow-sm border border-slate-800/50">
-    <p class="text-xs text-gray-500">Liquidität</p>
-    <h2 class="text-xl">{{ financialSummaryData?.liquidity }}</h2>
+} @else {
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <div class="rounded-xl bg-slate-800/40 p-4 animate-pulse">
+        <div class="h-3 bg-slate-700 rounded w-24 mb-2"></div>
+        <div class="h-6 bg-slate-700 rounded w-20"></div>
+      </div>
+    }
   </div>
-  <div class="rounded-2xl bg-bg-soft m-3 p-4 shadow-sm border border-slate-800/50">
-    <p class="text-xs text-gray-500">Nettovermögen</p>
-    <h2 class="text-xl">{{ financialSummaryData?.netWorth }}</h2>
-  </div>
-</div>
+}

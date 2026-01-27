@@ -1,0 +1,88 @@
+<a
+  [routerLink]="['/learning', module.id]"
+  class="block rounded-2xl bg-bg-soft border border-slate-800/50 overflow-hidden transition hover:border-slate-700 hover:shadow-lg"
+>
+  <div class="p-6">
+    <!-- Header -->
+    <div class="flex items-start justify-between gap-3 mb-3">
+      <h3 class="text-lg font-semibold line-clamp-2">{{ module.title }}</h3>
+      <span
+        class="shrink-0 px-2 py-0.5 rounded-full text-xs font-medium"
+        [ngClass]="getStatusBadgeClass()"
+      >
+        {{ 'learning.modules.' + (module.userStatus === 'not_started' ? 'notStarted' : (module.userStatus === 'in_progress' ? 'inProgress' : 'completed')) | translate }}
+      </span>
+    </div>
+
+    <!-- Description -->
+    @if (module.description) {
+      <p class="text-sm text-slate-400 line-clamp-2 mb-4">{{ module.description }}</p>
+    }
+
+    <!-- Progress Bar (if in progress) -->
+    @if (module.userStatus === 'in_progress' && module.userProgress > 0) {
+      <div class="mb-4">
+        <div class="flex items-center justify-between text-xs mb-1">
+          <span class="text-slate-400">{{ 'learning.progress.title' | translate }}</span>
+          <span>{{ module.userProgress }}%</span>
+        </div>
+        <div class="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+          <div
+            class="h-full bg-yellow-400 rounded-full transition-all"
+            [style.width.%]="module.userProgress"
+          ></div>
+        </div>
+      </div>
+    }
+
+    <!-- Meta Info -->
+    <div class="flex flex-wrap items-center gap-3 text-sm">
+      <!-- Category -->
+      <span
+        class="px-2 py-0.5 rounded text-xs font-medium"
+        [ngClass]="getCategoryColor()"
+      >
+        {{ 'learning.categories.' + module.category | translate }}
+      </span>
+
+      <!-- Difficulty -->
+      <div class="flex items-center gap-0.5">
+        @for (star of getDifficultyStars(); track $index) {
+          <svg
+            class="h-3.5 w-3.5"
+            [class.text-yellow-400]="star === 1"
+            [class.text-slate-600]="star === 0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        }
+      </div>
+
+      <!-- Duration -->
+      <div class="flex items-center gap-1 text-slate-400">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="text-xs">{{ module.estimatedMinutes }} min</span>
+      </div>
+    </div>
+
+    <!-- Tags -->
+    @if (module.tags && module.tags.length > 0) {
+      <div class="flex flex-wrap gap-1 mt-3">
+        @for (tag of module.tags.slice(0, 3); track tag) {
+          <span class="px-2 py-0.5 bg-slate-800/60 rounded text-xs text-slate-400">
+            {{ tag }}
+          </span>
+        }
+        @if (module.tags.length > 3) {
+          <span class="px-2 py-0.5 text-xs text-slate-500">
+            +{{ module.tags.length - 3 }}
+          </span>
+        }
+      </div>
+    }
+  </div>
+</a>

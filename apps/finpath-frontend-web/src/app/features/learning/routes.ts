@@ -1,4 +1,14 @@
 import { Routes } from '@angular/router';
+import { LearningPage } from './learning.page';
+import { ModuleDetailPage } from './module-detail/module-detail.page';
 
-// TODO: Implement learning routes
-export const LEARNING_ROUTES: Routes = [];
+export const LEARNING_ROUTES: Routes = [
+  {
+    path: '',
+    component: LearningPage
+  },
+  {
+    path: ':id',
+    component: ModuleDetailPage
+  }
+];

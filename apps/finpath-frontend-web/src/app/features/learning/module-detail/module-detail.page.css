@@ -1,0 +1,61 @@
+/* Module Detail Page Styles */
+.prose {
+  color: #e2e8f0;
+  line-height: 1.75;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  color: #f8fafc;
+  font-weight: 600;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+.prose h1 { font-size: 2em; }
+.prose h2 { font-size: 1.5em; }
+.prose h3 { font-size: 1.25em; }
+
+.prose p {
+  margin-bottom: 1.25em;
+}
+
+.prose ul, .prose ol {
+  padding-left: 1.5em;
+  margin-bottom: 1.25em;
+}
+
+.prose li {
+  margin-bottom: 0.5em;
+}
+
+.prose a {
+  color: #10b981;
+  text-decoration: underline;
+}
+
+.prose a:hover {
+  color: #34d399;
+}
+
+.prose code {
+  background: #1e293b;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25em;
+  font-size: 0.875em;
+}
+
+.prose pre {
+  background: #1e293b;
+  padding: 1em;
+  border-radius: 0.5em;
+  overflow-x: auto;
+  margin-bottom: 1.25em;
+}
+
+.prose blockquote {
+  border-left: 4px solid #10b981;
+  padding-left: 1em;
+  margin-left: 0;
+  font-style: italic;
+  color: #94a3b8;
+}

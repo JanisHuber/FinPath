@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, DestroyRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, LowerCasePipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CheckInService } from '@core/services/check-in.service';
 import { CheckIn, Recommendation } from '@models/check-in.models';
@@ -7,7 +8,7 @@ import { CheckIn, Recommendation } from '@models/check-in.models';
 @Component({
   selector: 'app-check-in',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule, LowerCasePipe],
   templateUrl: './check-in.component.html',
   styleUrls: ['./check-in.component.css']
 })

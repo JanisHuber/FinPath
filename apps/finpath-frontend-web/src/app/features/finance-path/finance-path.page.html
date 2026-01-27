@@ -1,0 +1,137 @@
+<div class="p-4 lg:p-6 space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-bold">{{ 'financePath.title' | translate }}</h1>
+      <p class="text-slate-400 mt-1">{{ 'financePath.subtitle' | translate }}</p>
+    </div>
+    <button
+      (click)="openCreateModal()"
+      class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition"
+    >
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      <span>{{ 'financePath.addGoal' | translate }}</span>
+    </button>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="rounded-xl bg-bg-soft p-4 border border-slate-800/50">
+      <p class="text-sm text-slate-400">{{ 'financePath.activeGoals' | translate }}</p>
+      <p class="text-2xl font-bold text-emerald-400">{{ getActiveGoalsCount() }}</p>
+    </div>
+    <div class="rounded-xl bg-bg-soft p-4 border border-slate-800/50">
+      <p class="text-sm text-slate-400">{{ 'financePath.completedGoals' | translate }}</p>
+      <p class="text-2xl font-bold text-blue-400">{{ getCompletedGoalsCount() }}</p>
+    </div>
+    <div class="rounded-xl bg-bg-soft p-4 border border-slate-800/50">
+      <p class="text-sm text-slate-400">{{ 'financePath.averageProgress' | translate }}</p>
+      <p class="text-2xl font-bold">{{ getTotalProgress() }}%</p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-2">
+    <button
+      (click)="setStatusFilter('all')"
+      [class.bg-emerald-500]="activeFilter === 'all'"
+      [class.text-white]="activeFilter === 'all'"
+      [class.bg-slate-800/40]="activeFilter !== 'all'"
+      class="px-3 py-1.5 rounded-lg text-sm transition hover:bg-slate-700"
+    >
+      {{ 'financePath.filter.all' | translate }}
+    </button>
+    <button
+      (click)="setStatusFilter('active')"
+      [class.bg-emerald-500]="activeFilter === 'active'"
+      [class.text-white]="activeFilter === 'active'"
+      [class.bg-slate-800/40]="activeFilter !== 'active'"
+      class="px-3 py-1.5 rounded-lg text-sm transition hover:bg-slate-700"
+    >
+      {{ 'financePath.filter.active' | translate }}
+    </button>
+    <button
+      (click)="setStatusFilter('completed')"
+      [class.bg-emerald-500]="activeFilter === 'completed'"
+      [class.text-white]="activeFilter === 'completed'"
+      [class.bg-slate-800/40]="activeFilter !== 'completed'"
+      class="px-3 py-1.5 rounded-lg text-sm transition hover:bg-slate-700"
+    >
+      {{ 'financePath.filter.completed' | translate }}
+    </button>
+    <button
+      (click)="setStatusFilter('paused')"
+      [class.bg-emerald-500]="activeFilter === 'paused'"
+      [class.text-white]="activeFilter === 'paused'"
+      [class.bg-slate-800/40]="activeFilter !== 'paused'"
+      class="px-3 py-1.5 rounded-lg text-sm transition hover:bg-slate-700"
+    >
+      {{ 'financePath.filter.paused' | translate }}
+    </button>
+  </div>
+
+  <!-- Goals List -->
+  @if (isLoading) {
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="rounded-2xl bg-bg-soft p-6 border border-slate-800/50 animate-pulse">
+          <div class="flex items-start gap-4">
+            <div class="h-12 w-12 rounded-xl bg-slate-700"></div>
+            <div class="flex-1">
+              <div class="h-5 bg-slate-700 rounded w-1/3 mb-2"></div>
+              <div class="h-4 bg-slate-700 rounded w-2/3"></div>
+            </div>
+          </div>
+          <div class="mt-4 h-2 bg-slate-700 rounded-full"></div>
+        </div>
+      }
+    </div>
+  } @else if (error) {
+    <div class="rounded-2xl bg-red-500/10 p-6 border border-red-500/20 text-center">
+      <p class="text-red-400">{{ error }}</p>
+      <button
+        (click)="loadGoals()"
+        class="mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
+      >
+        {{ 'common.retry' | translate }}
+      </button>
+    </div>
+  } @else if (filteredGoals.length === 0) {
+    <div class="rounded-2xl bg-bg-soft p-12 border border-slate-800/50 text-center">
+      <div class="mx-auto h-16 w-16 rounded-full bg-slate-800 flex items-center justify-center mb-4">
+        <svg class="h-8 w-8 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium mb-2">{{ 'financePath.noGoals' | translate }}</h3>
+      <p class="text-slate-400 mb-4">{{ 'financePath.noGoalsDescription' | translate }}</p>
+      <button
+        (click)="openCreateModal()"
+        class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition"
+      >
+        {{ 'financePath.createFirstGoal' | translate }}
+      </button>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      @for (goal of filteredGoals; track goal.id) {
+        <app-goal-card
+          [goal]="goal"
+          (edit)="openEditModal(goal)"
+          (delete)="onGoalDeleted(goal.id)"
+        ></app-goal-card>
+      }
+    </div>
+  }
+</div>
+
+<!-- Goal Modal -->
+@if (showGoalModal) {
+  <app-goal-form-modal
+    [goal]="selectedGoal"
+    (close)="closeModal()"
+    (saved)="onGoalSaved()"
+  ></app-goal-form-modal>
+}

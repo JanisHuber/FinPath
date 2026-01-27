@@ -1,10 +1,399 @@
 {
   "app": {
-    "title": "FinPath – Ton coach financier digital",
+    "title": "FinPath - Ton coach financier numerique",
     "dashboard": "Tableau de bord",
-    "finance-path": "Parcours financier",
-    "learning": "Apprentissage",
+    "finance-path": "Plan financier",
+    "learning": "Apprendre",
     "profile": "Profil",
-    "settings": "Paramètres"
+    "settings": "Parametres",
+    "logout": "Deconnexion",
+    "notifications": "Notifications"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "create": "Creer",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Precedent",
+    "loading": "Chargement...",
+    "saving": "Enregistrement...",
+    "error": "Erreur",
+    "success": "Succes",
+    "warning": "Avertissement",
+    "info": "Information",
+    "yes": "Oui",
+    "no": "Non",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "all": "Tous",
+    "none": "Aucun",
+    "required": "Requis",
+    "optional": "Optionnel",
+    "retry": "Reessayer"
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "email": "E-mail",
+      "emailPlaceholder": "ton@email.ch",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Mot de passe",
+      "submit": "Se connecter",
+      "loading": "Chargement...",
+      "noAccount": "Pas encore de compte?",
+      "register": "S'inscrire",
+      "forgotPassword": "Mot de passe oublie?",
+      "error": {
+        "failed": "Echec de la connexion",
+        "invalidCredentials": "Identifiants invalides"
+      }
+    },
+    "register": {
+      "title": "Inscription",
+      "username": "Nom d'utilisateur",
+      "usernamePlaceholder": "Ton nom d'utilisateur",
+      "email": "E-mail",
+      "emailPlaceholder": "ton@email.ch",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Min. 8 caracteres",
+      "confirmPassword": "Confirmer le mot de passe",
+      "confirmPasswordPlaceholder": "Repeter le mot de passe",
+      "submit": "S'inscrire",
+      "loading": "Creation en cours...",
+      "hasAccount": "Deja un compte?",
+      "login": "Se connecter",
+      "success": "Inscription reussie! Veuillez confirmer votre e-mail.",
+      "error": {
+        "failed": "Echec de l'inscription",
+        "emailExists": "Cet e-mail est deja enregistre",
+        "passwordMismatch": "Les mots de passe ne correspondent pas",
+        "weakPassword": "Le mot de passe est trop faible"
+      }
+    },
+    "logout": {
+      "title": "Deconnexion",
+      "confirm": "Voulez-vous vraiment vous deconnecter?",
+      "success": "Deconnexion reussie"
+    }
+  },
+  "validation": {
+    "required": "Ce champ est requis",
+    "email": "Adresse e-mail invalide",
+    "minLength": "Minimum {{min}} caracteres requis",
+    "maxLength": "Maximum {{max}} caracteres autorises",
+    "min": "La valeur minimale est {{min}}",
+    "max": "La valeur maximale est {{max}}",
+    "pattern": "Format invalide",
+    "passwordMismatch": "Les mots de passe ne correspondent pas"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bienvenue",
+    "checkIn": {
+      "title": "Bilan financier",
+      "status": {
+        "good": "Tout va bien",
+        "average": "Quelques points a verifier",
+        "bad": "Action requise"
+      },
+      "score": "Score financier",
+      "recommendation": "Recommandation"
+    },
+    "financeSummary": {
+      "title": "Apercu financier",
+      "monthlyIncome": "Revenus mensuels",
+      "monthlyExpenses": "Depenses mensuelles",
+      "liquidity": "Liquidite",
+      "netWorth": "Patrimoine net",
+      "change": "Variation"
+    },
+    "quickActions": {
+      "title": "Actions rapides",
+      "addTransaction": "Ajouter une transaction",
+      "addGoal": "Ajouter un objectif",
+      "viewReports": "Voir les rapports"
+    }
+  },
+  "financePath": {
+    "title": "Plan financier",
+    "subtitle": "Tes objectifs financiers en un coup d'oeil",
+    "addGoal": "Nouvel objectif",
+    "activeGoals": "Objectifs actifs",
+    "completedGoals": "Objectifs atteints",
+    "averageProgress": "Progression moyenne",
+    "noGoals": "Pas encore d'objectifs",
+    "noGoalsDescription": "Cree ton premier objectif financier pour suivre ta progression.",
+    "createFirstGoal": "Creer le premier objectif",
+    "editGoal": "Modifier l'objectif",
+    "createGoal": "Creer un nouvel objectif",
+    "progress": "Progression",
+    "daysLeft": "jours restants",
+    "dueToday": "Echeance aujourd'hui",
+    "overdue": "En retard",
+    "milestones": "Jalons",
+    "estimated": "Estimation",
+    "category": "Categorie",
+    "filter": {
+      "all": "Tous",
+      "active": "Actif",
+      "completed": "Termine",
+      "paused": "En pause"
+    },
+    "status": {
+      "active": "Actif",
+      "completed": "Termine",
+      "paused": "En pause",
+      "cancelled": "Annule"
+    },
+    "form": {
+      "name": "Nom",
+      "namePlaceholder": "p.ex. Constituer un fonds d'urgence",
+      "nameRequired": "Le nom est requis",
+      "description": "Description",
+      "descriptionPlaceholder": "Description optionnelle de ton objectif",
+      "targetAmount": "Montant cible",
+      "targetRequired": "Le montant cible est requis",
+      "currentAmount": "Montant actuel",
+      "category": "Categorie",
+      "deadline": "Echeance",
+      "color": "Couleur",
+      "milestones": "Jalons",
+      "addMilestone": "Ajouter un jalon",
+      "milestoneName": "Nom du jalon"
+    },
+    "goals": {
+      "title": "Objectifs",
+      "add": "Nouvel objectif",
+      "edit": "Modifier l'objectif",
+      "delete": "Supprimer l'objectif",
+      "deleteConfirm": "Voulez-vous vraiment supprimer cet objectif?",
+      "name": "Nom",
+      "description": "Description",
+      "targetAmount": "Montant cible",
+      "currentAmount": "Montant actuel",
+      "deadline": "Echeance",
+      "category": "Categorie",
+      "status": "Statut",
+      "priority": "Priorite",
+      "progress": "Progression",
+      "forecast": "Prevision",
+      "noGoals": "Pas encore d'objectifs"
+    },
+    "categories": {
+      "savings": "Epargne",
+      "investment": "Investissement",
+      "debt_payoff": "Remboursement de dettes",
+      "emergency_fund": "Fonds d'urgence",
+      "retirement": "Retraite",
+      "education": "Education",
+      "vacation": "Vacances",
+      "other": "Autre"
+    },
+    "statuses": {
+      "active": "Actif",
+      "completed": "Termine",
+      "paused": "En pause",
+      "cancelled": "Annule"
+    }
+  },
+  "learning": {
+    "title": "Apprendre",
+    "subtitle": "Connaissances financieres pour toi",
+    "noModules": "Aucun module trouve",
+    "noModulesDescription": "Aucun module d'apprentissage disponible pour le moment.",
+    "summary": "Resume",
+    "markComplete": "Marquer comme termine",
+    "alreadyCompleted": "Deja termine",
+    "modules": {
+      "title": "Modules",
+      "all": "Tous les modules",
+      "inProgress": "En cours",
+      "completed": "Termines",
+      "notStarted": "Non commences"
+    },
+    "categories": {
+      "basics": "Bases",
+      "budgeting": "Budget",
+      "investing": "Investissement",
+      "taxes": "Impots",
+      "retirement": "Retraite",
+      "debt_management": "Gestion des dettes",
+      "advanced": "Avance"
+    },
+    "progress": {
+      "title": "Ta progression",
+      "completed": "{{count}} modules termines",
+      "totalProgress": "Progression totale"
+    },
+    "difficulty": {
+      "1": "Debutant",
+      "2": "Facile",
+      "3": "Moyen",
+      "4": "Avance",
+      "5": "Expert"
+    },
+    "estimatedTime": "Temps estime: {{minutes}} min."
+  },
+  "settings": {
+    "title": "Parametres",
+    "tabs": {
+      "profile": "Profil",
+      "finances": "Finances",
+      "investments": "Investissements",
+      "app": "Affichage"
+    },
+    "profile": {
+      "title": "Profil",
+      "avatar": "Photo de profil",
+      "changeAvatar": "Changer l'image",
+      "removeAvatar": "Supprimer l'image",
+      "displayName": "Nom d'affichage",
+      "email": "E-mail",
+      "memberSince": "Membre depuis",
+      "changePassword": "Changer le mot de passe",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmNewPassword": "Confirmer le nouveau mot de passe",
+      "deleteAccount": "Supprimer le compte",
+      "deleteAccountWarning": "Cette action est irreversible. Toutes vos donnees seront definitivement supprimees.",
+      "deleteAccountConfirm": "Tapez 'SUPPRIMER' pour confirmer"
+    },
+    "finances": {
+      "title": "Finances",
+      "accounts": {
+        "title": "Comptes",
+        "add": "Ajouter un compte",
+        "edit": "Modifier le compte",
+        "delete": "Supprimer le compte",
+        "types": {
+          "invest": "Investir",
+          "spending": "Depenses",
+          "save": "Epargne",
+          "custom": "Personnalise"
+        }
+      },
+      "currency": "Devise",
+      "budgetPeriod": "Periode budgetaire"
+    },
+    "investments": {
+      "title": "Investissements",
+      "riskProfile": "Profil de risque",
+      "portfolioView": "Vue du portefeuille"
+    },
+    "appSettings": {
+      "title": "Parametres de l'application",
+      "language": "Langue",
+      "languages": {
+        "de": "Deutsch",
+        "fr": "Francais",
+        "en": "English"
+      },
+      "theme": "Theme",
+      "themes": {
+        "light": "Clair",
+        "dark": "Sombre",
+        "system": "Systeme"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "inApp": "Notifications dans l'application",
+        "email": "Notifications par e-mail",
+        "push": "Notifications push"
+      },
+      "privacy": {
+        "title": "Confidentialite",
+        "analytics": "Statistiques d'utilisation anonymes",
+        "personalization": "Recommandations personnalisees"
+      }
+    }
+  },
+  "accounts": {
+    "title": "Comptes",
+    "balance": "Solde",
+    "type": "Type de compte",
+    "add": "Ajouter un compte",
+    "edit": "Modifier le compte",
+    "delete": "Supprimer le compte",
+    "deleteConfirm": "Voulez-vous vraiment supprimer ce compte? Toutes les transactions associees seront egalement supprimees.",
+    "types": {
+      "invest": "Investir",
+      "spending": "Depenses",
+      "save": "Epargne",
+      "custom": "Personnalise"
+    },
+    "noAccounts": "Pas encore de comptes"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "add": "Ajouter une transaction",
+    "edit": "Modifier la transaction",
+    "delete": "Supprimer la transaction",
+    "type": "Type de transaction",
+    "types": {
+      "income": "Revenu",
+      "expense": "Depense",
+      "transfer": "Virement"
+    },
+    "amount": "Montant",
+    "date": "Date",
+    "category": "Categorie",
+    "description": "Description",
+    "account": "Compte",
+    "recurring": "Recurrent",
+    "noTransactions": "Pas encore de transactions"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAsRead": "Marquer comme lu",
+    "markAllAsRead": "Tout marquer comme lu",
+    "delete": "Supprimer",
+    "noNotifications": "Aucune notification",
+    "types": {
+      "info": "Information",
+      "warning": "Avertissement",
+      "success": "Succes",
+      "reminder": "Rappel",
+      "achievement": "Succes debloque"
+    }
+  },
+  "family": {
+    "title": "Famille",
+    "members": "Membres de la famille",
+    "add": "Ajouter un membre",
+    "edit": "Modifier le membre",
+    "delete": "Supprimer le membre",
+    "name": "Nom",
+    "relationship": "Relation",
+    "birthDate": "Date de naissance",
+    "switchProfile": "Changer de profil",
+    "noMembers": "Aucun membre de la famille ajoute"
+  },
+  "onboarding": {
+    "title": "Bienvenue sur FinPath",
+    "subtitle": "Configurons ton profil financier",
+    "steps": {
+      "welcome": "Bienvenue",
+      "income": "Revenus",
+      "expenses": "Depenses",
+      "goals": "Objectifs",
+      "accounts": "Comptes",
+      "finish": "Termine"
+    },
+    "skip": "Passer",
+    "finish": "Terminer"
+  },
+  "errors": {
+    "generic": "Une erreur s'est produite. Veuillez reessayer.",
+    "network": "Erreur reseau. Veuillez verifier votre connexion Internet.",
+    "unauthorized": "Vous n'etes pas autorise a effectuer cette action.",
+    "notFound": "La ressource demandee n'a pas ete trouvee.",
+    "serverError": "Erreur serveur. Veuillez reessayer plus tard."
   }
 }

@@ -1,35 +1,56 @@
 package ch.finpath.api;
 
-import ch.finpath.api.dto.CreateProfileRequest;
 import ch.finpath.api.dto.ProfileDto;
-import ch.finpath.persistence.profiles.ProfileEntity;
-import ch.finpath.persistence.profiles.ProfilesRepository;
+import ch.finpath.api.dto.UpdateProfileRequest;
+import ch.finpath.api.dto.UpdateSettingsRequest;
+import ch.finpath.api.dto.UserSettingsDto;
 import ch.finpath.security.AuthenticatedUser;
+import ch.finpath.service.ProfileService;
+import ch.finpath.service.UserSettingsService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/me")
+@RequestMapping("/api")
 public class UserController {
 
-    private final ProfilesRepository profilesRepository;
+    private final ProfileService profileService;
+    private final UserSettingsService userSettingsService;
 
-    public UserController(ProfilesRepository profilesRepository) {
-        this.profilesRepository = profilesRepository;
+    public UserController(ProfileService profileService, UserSettingsService userSettingsService) {
+        this.profileService = profileService;
+        this.userSettingsService = userSettingsService;
     }
 
-    @GetMapping
-    public ProfileDto me(@AuthenticationPrincipal AuthenticatedUser user) {
-        ProfileEntity entity = profilesRepository.findById(user.id())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found"));
-        return new ProfileDto(entity.getDisplayName(), entity.getId());
+    @GetMapping("/me")
+    public ProfileDto getProfile(@AuthenticationPrincipal AuthenticatedUser user) {
+        return profileService.getProfile(user.id());
+    }
+
+    @PutMapping("/me")
+    public ProfileDto updateProfile(
+            @AuthenticationPrincipal AuthenticatedUser user,
+            @Valid @RequestBody UpdateProfileRequest request) {
+        return profileService.updateProfile(user.id(), request);
+    }
+
+    @GetMapping("/settings")
+    public UserSettingsDto getSettings(@AuthenticationPrincipal AuthenticatedUser user) {
+        return userSettingsService.getSettings(user.id());
+    }
+
+    @PutMapping("/settings")
+    public UserSettingsDto updateSettings(
+            @AuthenticationPrincipal AuthenticatedUser user,
+            @Valid @RequestBody UpdateSettingsRequest request) {
+        return userSettingsService.updateSettings(user.id(), request);
+    }
+
+    @PostMapping("/settings/onboarding/complete")
+    public ResponseEntity<Void> completeOnboarding(@AuthenticationPrincipal AuthenticatedUser user) {
+        userSettingsService.markOnboardingCompleted(user.id());
+        return ResponseEntity.ok().build();
     }
 }

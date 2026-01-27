@@ -1,0 +1,156 @@
+<div class="p-4 lg:p-6">
+  <!-- Back Button -->
+  <a
+    routerLink="/learning"
+    class="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition"
+  >
+    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+    </svg>
+    <span>{{ 'common.back' | translate }}</span>
+  </a>
+
+  @if (isLoading) {
+    <div class="max-w-4xl mx-auto animate-pulse">
+      <div class="h-8 bg-slate-700 rounded w-2/3 mb-4"></div>
+      <div class="h-4 bg-slate-700 rounded w-1/3 mb-8"></div>
+      <div class="space-y-4">
+        <div class="h-4 bg-slate-700 rounded w-full"></div>
+        <div class="h-4 bg-slate-700 rounded w-full"></div>
+        <div class="h-4 bg-slate-700 rounded w-3/4"></div>
+      </div>
+    </div>
+  } @else if (error) {
+    <div class="max-w-4xl mx-auto rounded-2xl bg-red-500/10 p-6 border border-red-500/20 text-center">
+      <p class="text-red-400">{{ error }}</p>
+      <button
+        (click)="loadModule(module?.id || '')"
+        class="mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
+      >
+        {{ 'common.retry' | translate }}
+      </button>
+    </div>
+  } @else if (module) {
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <div class="rounded-2xl bg-bg-soft p-6 border border-slate-800/50 mb-6">
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <!-- Category Badge -->
+          <span
+            class="px-3 py-1 rounded-full text-sm font-medium"
+            [ngClass]="getCategoryColor()"
+          >
+            {{ 'learning.categories.' + module.category | translate }}
+          </span>
+
+          <!-- Difficulty -->
+          <div class="flex items-center gap-0.5">
+            @for (star of getDifficultyStars(); track $index) {
+              <svg
+                class="h-4 w-4"
+                [class.text-yellow-400]="star === 1"
+                [class.text-slate-600]="star === 0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            }
+            <span class="ml-1 text-sm text-slate-400">{{ 'learning.difficulty.' + module.difficultyLevel | translate }}</span>
+          </div>
+
+          <!-- Duration -->
+          <div class="flex items-center gap-1 text-slate-400">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-sm">{{ module.estimatedMinutes }} min</span>
+          </div>
+
+          <!-- Completed Badge -->
+          @if (isCompleted()) {
+            <span class="px-3 py-1 rounded-full text-sm font-medium bg-emerald-500/20 text-emerald-400">
+              <svg class="inline h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              {{ 'learning.modules.completed' | translate }}
+            </span>
+          }
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ module.title }}</h1>
+
+        @if (module.description) {
+          <p class="text-slate-400">{{ module.description }}</p>
+        }
+
+        <!-- Tags -->
+        @if (module.tags && module.tags.length > 0) {
+          <div class="flex flex-wrap gap-2 mt-4">
+            @for (tag of module.tags; track tag) {
+              <span class="px-2 py-1 bg-slate-800/60 rounded text-sm text-slate-400">
+                {{ tag }}
+              </span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Content -->
+      <div class="rounded-2xl bg-bg-soft p-6 border border-slate-800/50 mb-6">
+        <div class="prose prose-invert max-w-none" [innerHTML]="module.content">
+        </div>
+      </div>
+
+      <!-- Summary -->
+      @if (module.summary) {
+        <div class="rounded-2xl bg-emerald-500/10 p-6 border border-emerald-500/20 mb-6">
+          <h3 class="text-lg font-semibold text-emerald-400 mb-3">
+            <svg class="inline h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{ 'learning.summary' | translate }}
+          </h3>
+          <p class="text-slate-300">{{ module.summary }}</p>
+        </div>
+      }
+
+      <!-- Actions -->
+      <div class="flex items-center justify-between">
+        <a
+          routerLink="/learning"
+          class="px-4 py-2 rounded-lg bg-slate-800/40 hover:bg-slate-700 transition"
+        >
+          {{ 'common.back' | translate }}
+        </a>
+
+        @if (!isCompleted()) {
+          <button
+            (click)="markComplete()"
+            [disabled]="isCompleting"
+            class="flex items-center gap-2 px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition disabled:opacity-50"
+          >
+            @if (isCompleting) {
+              <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            } @else {
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            }
+            {{ 'learning.markComplete' | translate }}
+          </button>
+        } @else {
+          <div class="flex items-center gap-2 text-emerald-400">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{ 'learning.alreadyCompleted' | translate }}
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

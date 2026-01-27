@@ -1,0 +1,174 @@
+<div class="p-4 lg:p-6 space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-bold">{{ 'learning.title' | translate }}</h1>
+      <p class="text-slate-400 mt-1">{{ 'learning.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Progress Overview -->
+  @if (stats) {
+    <div class="rounded-2xl bg-bg-soft p-6 border border-slate-800/50">
+      <div class="flex flex-col lg:flex-row lg:items-center gap-6">
+        <!-- Progress Circle -->
+        <div class="flex items-center gap-4">
+          <div class="relative h-20 w-20">
+            <svg class="h-20 w-20 -rotate-90" viewBox="0 0 36 36">
+              <circle
+                cx="18" cy="18" r="15.9"
+                fill="none"
+                stroke="currentColor"
+                class="text-slate-700"
+                stroke-width="2"
+              />
+              <circle
+                cx="18" cy="18" r="15.9"
+                fill="none"
+                stroke="currentColor"
+                class="text-emerald-500"
+                stroke-width="2"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="getCompletionPercentage() + ', 100'"
+              />
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="text-lg font-bold">{{ getCompletionPercentage() }}%</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-sm text-slate-400">{{ 'learning.progress.totalProgress' | translate }}</p>
+            <p class="font-medium">{{ stats.completedModules }}/{{ stats.totalModules }} {{ 'learning.modules.title' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="flex-1 grid grid-cols-3 gap-4">
+          <div class="text-center p-3 rounded-xl bg-slate-800/40">
+            <p class="text-2xl font-bold text-blue-400">{{ stats.totalModules }}</p>
+            <p class="text-xs text-slate-400">{{ 'learning.modules.all' | translate }}</p>
+          </div>
+          <div class="text-center p-3 rounded-xl bg-slate-800/40">
+            <p class="text-2xl font-bold text-yellow-400">{{ stats.inProgressModules }}</p>
+            <p class="text-xs text-slate-400">{{ 'learning.modules.inProgress' | translate }}</p>
+          </div>
+          <div class="text-center p-3 rounded-xl bg-slate-800/40">
+            <p class="text-2xl font-bold text-emerald-400">{{ stats.completedModules }}</p>
+            <p class="text-xs text-slate-400">{{ 'learning.modules.completed' | translate }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Filters -->
+  <div class="space-y-4">
+    <!-- Category Filter -->
+    <div class="flex flex-wrap gap-2">
+      <button
+        (click)="setCategoryFilter('all')"
+        [class.bg-emerald-500]="categoryFilter === 'all'"
+        [class.text-white]="categoryFilter === 'all'"
+        [class.bg-slate-800/40]="categoryFilter !== 'all'"
+        class="px-3 py-1.5 rounded-lg text-sm transition hover:bg-slate-700"
+      >
+        {{ 'common.all' | translate }}
+      </button>
+      @for (cat of categories; track cat) {
+        <button
+          (click)="setCategoryFilter(cat)"
+          [class.bg-emerald-500]="categoryFilter === cat"
+          [class.text-white]="categoryFilter === cat"
+          [class.bg-slate-800/40]="categoryFilter !== cat"
+          class="px-3 py-1.5 rounded-lg text-sm transition hover:bg-slate-700"
+        >
+          {{ 'learning.categories.' + cat | translate }}
+        </button>
+      }
+    </div>
+
+    <!-- Status Filter -->
+    <div class="flex flex-wrap gap-2">
+      <span class="text-sm text-slate-400 py-1.5">{{ 'common.filter' | translate }}:</span>
+      <button
+        (click)="setStatusFilter('all')"
+        [class.bg-blue-500]="statusFilter === 'all'"
+        [class.text-white]="statusFilter === 'all'"
+        [class.bg-slate-800/40]="statusFilter !== 'all'"
+        class="px-3 py-1.5 rounded-lg text-sm transition hover:bg-slate-700"
+      >
+        {{ 'common.all' | translate }}
+      </button>
+      <button
+        (click)="setStatusFilter('not_started')"
+        [class.bg-blue-500]="statusFilter === 'not_started'"
+        [class.text-white]="statusFilter === 'not_started'"
+        [class.bg-slate-800/40]="statusFilter !== 'not_started'"
+        class="px-3 py-1.5 rounded-lg text-sm transition hover:bg-slate-700"
+      >
+        {{ 'learning.modules.notStarted' | translate }}
+      </button>
+      <button
+        (click)="setStatusFilter('in_progress')"
+        [class.bg-blue-500]="statusFilter === 'in_progress'"
+        [class.text-white]="statusFilter === 'in_progress'"
+        [class.bg-slate-800/40]="statusFilter !== 'in_progress'"
+        class="px-3 py-1.5 rounded-lg text-sm transition hover:bg-slate-700"
+      >
+        {{ 'learning.modules.inProgress' | translate }}
+      </button>
+      <button
+        (click)="setStatusFilter('completed')"
+        [class.bg-blue-500]="statusFilter === 'completed'"
+        [class.text-white]="statusFilter === 'completed'"
+        [class.bg-slate-800/40]="statusFilter !== 'completed'"
+        class="px-3 py-1.5 rounded-lg text-sm transition hover:bg-slate-700"
+      >
+        {{ 'learning.modules.completed' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Modules List -->
+  @if (isLoading) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="rounded-2xl bg-bg-soft p-6 border border-slate-800/50 animate-pulse">
+          <div class="h-6 bg-slate-700 rounded w-2/3 mb-3"></div>
+          <div class="h-4 bg-slate-700 rounded w-full mb-2"></div>
+          <div class="h-4 bg-slate-700 rounded w-3/4"></div>
+          <div class="mt-4 flex items-center gap-2">
+            <div class="h-6 bg-slate-700 rounded w-16"></div>
+            <div class="h-6 bg-slate-700 rounded w-20"></div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (error) {
+    <div class="rounded-2xl bg-red-500/10 p-6 border border-red-500/20 text-center">
+      <p class="text-red-400">{{ error }}</p>
+      <button
+        (click)="loadData()"
+        class="mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
+      >
+        {{ 'common.retry' | translate }}
+      </button>
+    </div>
+  } @else if (filteredModules.length === 0) {
+    <div class="rounded-2xl bg-bg-soft p-12 border border-slate-800/50 text-center">
+      <div class="mx-auto h-16 w-16 rounded-full bg-slate-800 flex items-center justify-center mb-4">
+        <svg class="h-8 w-8 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium mb-2">{{ 'learning.noModules' | translate }}</h3>
+      <p class="text-slate-400">{{ 'learning.noModulesDescription' | translate }}</p>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (module of filteredModules; track module.id) {
+        <app-module-card [module]="module"></app-module-card>
+      }
+    </div>
+  }
+</div>

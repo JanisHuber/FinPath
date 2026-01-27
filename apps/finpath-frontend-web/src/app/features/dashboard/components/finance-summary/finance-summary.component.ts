@@ -1,4 +1,6 @@
 import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { CommonModule, DecimalPipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FinancialSummary } from '@models/financial-summary.models';
 import { FinancialSummaryService } from '@core/services/financial-summary.service';
@@ -6,7 +8,7 @@ import { FinancialSummaryService } from '@core/services/financial-summary.servic
 @Component({
   selector: 'app-finance-summary',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, TranslateModule, DecimalPipe],
   templateUrl: './finance-summary.component.html',
   styleUrls: ['./finance-summary.component.css']
 })

@@ -1,41 +1,103 @@
-<div class="grid grid-cols-4 grid-rows-2">
-  <div class="col-span-2 row-span-2 col-start-2 row-start-1">{{ checkInData?.status }}</div>
-  <div class="col-start-1 row-start-1">
-    @if (checkInData?.status === 'Good') {
-    <div class="shrink-0 h-12 w-12 mr-5">
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        role="img"
-        aria-label="Haken"
+@if (checkInData) {
+  <div class="flex flex-col lg:flex-row gap-6">
+    <!-- Status Section -->
+    <div class="flex items-center gap-4 flex-1">
+      <div
+        class="shrink-0 h-14 w-14 rounded-full flex items-center justify-center"
+        [class.bg-emerald-500/20]="checkInData.status === 'Good'"
+        [class.bg-yellow-500/20]="checkInData.status === 'Average'"
+        [class.bg-red-500/20]="checkInData.status === 'Bad'"
       >
-        <path d="M20 6L9 17l-5-5"></path>
-      </svg>
+        @if (checkInData.status === 'Good') {
+          <svg class="h-7 w-7 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6L9 17l-5-5"></path>
+          </svg>
+        } @else if (checkInData.status === 'Average') {
+          <svg class="h-7 w-7 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        } @else {
+          <svg class="h-7 w-7 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+        }
+      </div>
+      <div>
+        <p class="text-sm text-slate-400">{{ 'dashboard.checkIn.status.' + (checkInData.status | lowercase) | translate }}</p>
+        <p class="text-lg font-medium">{{ checkInData.financialScore.contextTip }}</p>
+      </div>
     </div>
 
-    } @else {
-    <div class="shrink-0 h-12 w-12 mr-5">
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        role="img"
-        aria-label="Ausrufezeichen"
-      >
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="12" y1="8" x2="12" y2="12"></line>
-        <line x1="12" y1="16" x2="12" y2="16"></line>
-      </svg>
+    <!-- Score Section -->
+    <div class="flex items-center gap-4 lg:border-l lg:border-slate-700 lg:pl-6">
+      <div class="relative h-16 w-16">
+        <svg class="h-16 w-16 -rotate-90" viewBox="0 0 36 36">
+          <circle
+            cx="18" cy="18" r="15.9"
+            fill="none"
+            stroke="currentColor"
+            class="text-slate-700"
+            stroke-width="2"
+          />
+          <circle
+            cx="18" cy="18" r="15.9"
+            fill="none"
+            stroke="currentColor"
+            [class.text-emerald-500]="checkInData.financialScore.score >= 70"
+            [class.text-yellow-500]="checkInData.financialScore.score >= 40 && checkInData.financialScore.score < 70"
+            [class.text-red-500]="checkInData.financialScore.score < 40"
+            stroke-width="2"
+            stroke-linecap="round"
+            [attr.stroke-dasharray]="checkInData.financialScore.score + ', 100'"
+          />
+        </svg>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <span class="text-lg font-bold">{{ checkInData.financialScore.score }}</span>
+        </div>
+      </div>
+      <div>
+        <p class="text-sm text-slate-400">{{ 'dashboard.checkIn.score' | translate }}</p>
+        <p class="font-medium">{{ checkInData.financialScore.score }}/100</p>
+      </div>
     </div>
-    }
   </div>
-  <div class="col-start-4">{{ checkInData?.financialScore?.score }}</div>
-  <div class="col-start-4 row-start-2">{{ bestRecommendation?.text }}</div>
-</div>
+
+  <!-- Recommendations -->
+  @if (checkInData.recommendations.length > 0) {
+    <div class="mt-6 pt-4 border-t border-slate-700">
+      <p class="text-sm text-slate-400 mb-3">{{ 'dashboard.checkIn.recommendation' | translate }}</p>
+      <div class="space-y-2">
+        @for (rec of checkInData.recommendations; track rec.text) {
+          <div
+            class="flex items-start gap-3 p-3 rounded-lg"
+            [class.bg-red-500/10]="rec.priority === 'High'"
+            [class.bg-yellow-500/10]="rec.priority === 'Medium'"
+            [class.bg-slate-800/40]="rec.priority === 'Low'"
+          >
+            <div
+              class="shrink-0 h-2 w-2 rounded-full mt-1.5"
+              [class.bg-red-400]="rec.priority === 'High'"
+              [class.bg-yellow-400]="rec.priority === 'Medium'"
+              [class.bg-slate-400]="rec.priority === 'Low'"
+            ></div>
+            <p class="text-sm">{{ rec.text }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+} @else {
+  <div class="animate-pulse">
+    <div class="flex items-center gap-4">
+      <div class="h-14 w-14 rounded-full bg-slate-700"></div>
+      <div class="flex-1">
+        <div class="h-3 bg-slate-700 rounded w-24 mb-2"></div>
+        <div class="h-5 bg-slate-700 rounded w-48"></div>
+      </div>
+    </div>
+  </div>
+}

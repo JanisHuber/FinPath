@@ -1,4 +1,9 @@
 import { Routes } from '@angular/router';
+import { FinancePathPage } from './finance-path.page';
 
-// TODO: Implement finance-path routes
-export const FINANCE_PATH_ROUTES: Routes = [];
+export const FINANCE_PATH_ROUTES: Routes = [
+  {
+    path: '',
+    component: FinancePathPage
+  }
+];
