@@ -1,5 +1,5 @@
 # Build stage
-FROM node:22-alpine AS builder
+FROM oven/bun:1.1-alpine AS builder
 
 WORKDIR /app
 
@@ -7,13 +7,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # Use npm ci for faster, deterministic installs
-RUN npm ci --only=production=false
+RUN bun install --production=false
 
 # Copy source files
 COPY . .
 
 # Build the application
-RUN npm run build -- --configuration=production
+RUN bun run build -- --configuration=production
 
 # Serve Stage
 FROM nginx:alpine
