@@ -1,8 +1,18 @@
-# Supabase
-.branches
-.temp
+# ===========================================
+# Supabase .gitignore
+# ===========================================
 
-# dotenvx
-.env.keys
+# Supabase CLI temp files
+.branches/
+.temp/
+
+# Local secrets (use env vars instead)
+.env
 .env.local
 .env.*.local
+.env.keys
+
+# DO commit these:
+# - config.toml
+# - migrations/*.sql
+# - seed.sql
