@@ -1,6 +1,9 @@
 # Build stage
 FROM oven/bun:1.3.7-alpine AS builder
 
+# Build argument for environment (development, production)
+ARG BUILD_CONFIG=production
+
 WORKDIR /app
 
 # Copy package files first for better layer caching
@@ -12,8 +15,8 @@ RUN bun install
 # Copy source files
 COPY . .
 
-# Build the application
-RUN bun run build --configuration=production
+# Build with specified configuration
+RUN bun run build --configuration=${BUILD_CONFIG}
 
 # Serve Stage
 FROM nginx:alpine

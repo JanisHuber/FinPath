@@ -83,6 +83,7 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: ${{ env.IMAGE_PREFIX_LOWER }}-frontend-web:dev
+          build-args: BUILD_CONFIG=development
           cache-from: type=gha,scope=frontend-web-dev
           cache-to: type=gha,mode=max,scope=frontend-web-dev
 
