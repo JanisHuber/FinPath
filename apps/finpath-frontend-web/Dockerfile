@@ -6,8 +6,8 @@ WORKDIR /app
 # Copy package files first for better layer caching
 COPY package*.json ./
 
-# Use npm ci for faster, deterministic installs
-RUN bun install --production=false
+# Install all dependencies (including devDependencies for build)
+RUN bun install
 
 # Copy source files
 COPY . .
