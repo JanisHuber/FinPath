@@ -1,7 +1,7 @@
-# Maven build artifacts (keep WAR files needed for Docker)
+# Maven build artifacts (keep JAR/WAR files needed for Docker)
 target/
+!target/*.jar
 !target/*.war
-!target/liberty/wlp/usr/shared/resources/*
 
 # Maven
 pom.xml.tag
