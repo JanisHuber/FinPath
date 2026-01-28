@@ -1,5 +1,8 @@
 services:
   backend-dev:
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     image: ghcr.io/janishuber/finpath-backend:dev
     container_name: backend-dev
     env_file: ./environments/.env.dev
