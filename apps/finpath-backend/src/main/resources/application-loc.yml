@@ -1,9 +1,18 @@
+# ===========================================
+# LOCAL DEVELOPMENT (Supabase CLI)
+# ===========================================
+
 spring:
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:54322/postgres
+    username: postgres
+    password: postgres
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://127.0.0.1:54321/auth/v1
 
 server:
   error:

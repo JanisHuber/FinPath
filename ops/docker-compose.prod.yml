@@ -3,8 +3,6 @@ services:
     image: ghcr.io/janishuber/finpath-backend:prod
     container_name: backend-prod
     env_file: ./environments/.env.prd
-    environment:
-      SPRING_PROFILES_ACTIVE: prd
     expose:
       - "9080"
     networks:

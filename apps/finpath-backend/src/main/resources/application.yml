@@ -25,7 +25,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://vsrlwxdxxzrwqqakqyzg.supabase.co/auth/v1
+          issuer-uri: ${SUPABASE_AUTH_URL}
 
 server:
   port: 9080

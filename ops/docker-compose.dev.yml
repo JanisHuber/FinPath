@@ -3,8 +3,6 @@ services:
     image: ghcr.io/janishuber/finpath-backend:dev
     container_name: backend-dev
     env_file: ./environments/.env.dev
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
     expose:
       - "9080"
     networks:

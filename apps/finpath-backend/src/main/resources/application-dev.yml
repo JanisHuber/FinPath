@@ -1,3 +1,7 @@
+# ===========================================
+# DEVELOPMENT (Supabase Cloud - Dev Project)
+# ===========================================
+
 spring:
   jpa:
     show-sql: true
