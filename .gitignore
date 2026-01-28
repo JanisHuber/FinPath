@@ -1,12 +1,19 @@
-# === Node / Angular ===
+# ===========================================
+# FinPath Root .gitignore
+# ===========================================
+
+# === Node / Frontend ===
 node_modules/
 dist/
+www/
 .angular/
-npm-debug.log
-yarn-error.log
-.env
-*.env
-src/environments/environment*.ts
+.cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+bun.lockb
+.bun/
 
 # === Java / Maven ===
 target/
@@ -15,47 +22,88 @@ target/
 *.war
 *.ear
 *.log
-.mvn/
-!mvnw
-!mvnw.cmd
+.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
 
-# === IntelliJ / VSCode ===
+# === IDE / Editor ===
 .idea/
 .vscode/
 *.iml
+*.sublime-workspace
+*.sublime-project
+.project
+.classpath
+.settings/
+.c9/
+*.launch
 
-# === OS Crap ===
+# === OS Files ===
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# === Docker ===
-.dockerignore
-
-# === Firebase / Secrets ===
-# Nur sensible JSON-Dateien ignorieren
-firebase-debug.log
-finpath-firebase*.json
+# === Environment & Secrets ===
+.env
+.env.*
+!.env.*.template
 *.key
 *.pem
+*.p12
+*.pfx
+*credentials*.json
+*secret*.json
+finpath-firebase*.json
 
-# === Database dumps, local crap ===
-*.sql
+# === Database ===
 *.sqlite
+*.sqlite3
 *.db
+# SQL dumps (but NOT supabase migrations)
+/dumps/
+*.dump.sql
+*_dump.sql
+*_backup.sql
 
-# === Misc ===
-*.swp
-*.swo
-placeholder.txt
-/whatchatz-frontend/src/environments/environment.ts
+# === Supabase ===
+# Migrations ARE tracked - don't ignore them!
+# supabase/.gitignore handles internal temp files
 
-# === Own ===
-/ops/secrets/*
+# === Docker ===
+.docker/
+
+# === Build & Test ===
+coverage/
+.nyc_output/
+*.lcov
+test-results/
+playwright-report/
+__screenshots__/
+
+# === Capacitor Native (if building locally) ===
+# Remove these if you want to track native code
+/apps/finpath-frontend-mobile/ios/
+/apps/finpath-frontend-mobile/android/
+
+# === Ops Secrets ===
+/ops/secrets/
 !/ops/secrets/*.template
 
-# === Capacitor native builds ===
-ios/
-android/
+# === Temp & Cache ===
+*.swp
+*.swo
+*.tmp
+*.temp
+*~
+.cache/
+.parcel-cache/
+.turbo/
 
-# === Standard build artefacts ===
-www/
+# === Logs ===
+logs/
+*.log
+firebase-debug.log

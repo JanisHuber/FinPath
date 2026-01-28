@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { environment } from '@env';
+import { environment } from '../../../environments/environment';
 import { AuthChangeEvent, AuthResponse, createClient, Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { BehaviorSubject, from, Observable } from 'rxjs';
+import { Profile } from '../models/profile.models';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -9,23 +11,65 @@ import { BehaviorSubject, from, Observable } from 'rxjs';
 export class AuthService {
   private supabase: SupabaseClient;
   private currentUserSubject: BehaviorSubject<User | null>;
-  public currentUser$: Observable<User | null>;
+  private currentProfileSubject: BehaviorSubject<Profile | null>;
+  private initializedSubject = new BehaviorSubject<boolean>(false);
 
-  constructor() {
+  public currentUser$: Observable<User | null>;
+  public currentProfile$: Observable<Profile | null>;
+  public isInitialized$ = this.initializedSubject.asObservable();
+
+  private http: HttpClient;
+
+  constructor(private readonly httpClient: HttpClient) {
+    this.http = httpClient;
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
     this.currentUserSubject = new BehaviorSubject<User | null>(null);
     this.currentUser$ = this.currentUserSubject.asObservable();
+    this.currentProfileSubject = new BehaviorSubject<Profile | null>(null);
+    this.currentProfile$ = this.currentProfileSubject.asObservable();
 
     this.initializeAuth();
   }
 
   private async initializeAuth() {
-    const { data } = await this.supabase.auth.getSession();
-    this.currentUserSubject.next(data.session?.user ?? null);
+    const { data: { user }, error } = await this.supabase.auth.getUser();
 
-    this.supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
-      this.currentUserSubject.next(session?.user ?? null);
+    if (error || !user) {
+      await this.supabase.auth.signOut();
+      this.currentUserSubject.next(null);
+    } else {
+      this.currentUserSubject.next(user);
+      this.loadProfile();
+    }
+    this.initializedSubject.next(true);
+
+    this.supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        this.currentUserSubject.next(session.user);
+        this.loadProfile();
+      } else if (event === 'SIGNED_OUT') {
+        this.currentUserSubject.next(null);
+        this.currentProfileSubject.next(null);
+      }
     });
+  }
+
+  private loadProfile() {
+    this.http.get<Profile>(`${environment.apiBaseUrl}/me`).subscribe({
+      next: (profile) => {
+        this.currentProfileSubject.next(profile);
+        console.log('User Profile loaded:', profile);
+      },
+      error: (err) => console.error('Failed to load profile:', err)
+    });
+  }
+
+  async getAccessToken(): Promise<string | null> {
+    if (!this.currentUserSubject.value) {
+      return null;
+    }
+    const { data } = await this.supabase.auth.getSession();
+    return data.session?.access_token ?? null;
   }
 
   register(email: string, password: string, username: string): Observable<AuthResponse> {
@@ -59,6 +103,10 @@ export class AuthService {
 
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
+  }
+
+  getCurrentProfile(): Profile | null {
+    return this.currentProfileSubject.value;
   }
 
   isAuthenticated(): boolean {

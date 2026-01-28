@@ -15,7 +15,7 @@ env:
 
 jobs:
   build-backend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       contents: read
       packages: write
@@ -56,7 +56,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=backend-dev
 
   build-frontend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       contents: read
       packages: write
@@ -83,12 +83,32 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: ${{ env.IMAGE_PREFIX_LOWER }}-frontend-web:dev
+          build-args: BUILD_CONFIG=development
           cache-from: type=gha,scope=frontend-web-dev
           cache-to: type=gha,mode=max,scope=frontend-web-dev
 
+  migrate-database:
+    name: Run Supabase migrations
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_PASS_DEV }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link to Supabase project
+        run: supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF_DEV }}
+
+      - name: Push migrations to dev
+        run: supabase db push
+
   deploy:
     runs-on: ubuntu-latest
-    needs: [build-backend, build-frontend]
+    needs: [build-backend, build-frontend, migrate-database]
     steps:
       - name: Deploy to Hetzner DEV
         uses: appleboy/ssh-action@v1.2.0

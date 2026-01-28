@@ -1,3 +1,7 @@
+# ===========================================
+# DEVELOPMENT (Supabase Cloud - Dev Project)
+# ===========================================
+
 spring:
   jpa:
     show-sql: true
@@ -11,10 +15,12 @@ server:
     include-stacktrace: always
 
 cors:
-  allowed-origins: https://dev.css-appli24.com,http://localhost:4200
+  allowed-origins: https://dev.css-appli24.com
 
 logging:
   level:
     root: INFO
     ch.finpath: DEBUG
     org.springframework.web: DEBUG
+    org.springframework.security: WARN
+    org.springframework.security.oauth2: WARN

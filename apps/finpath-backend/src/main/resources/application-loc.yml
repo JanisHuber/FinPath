@@ -1,0 +1,31 @@
+# ===========================================
+# LOCAL DEVELOPMENT (Supabase CLI)
+# ===========================================
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:54322/postgres
+    username: postgres
+    password: postgres
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://127.0.0.1:54321/auth/v1
+
+server:
+  error:
+    include-message: always
+    include-stacktrace: always
+
+cors:
+  allowed-origins: http://localhost:4200
+
+logging:
+  level:
+    root: INFO
+    ch.finpath: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: WARN
+    org.springframework.security.oauth2: WARN

@@ -1,0 +1,50 @@
+# Maven build artifacts (keep JAR/WAR files needed for Docker)
+target/
+!target/*.jar
+!target/*.war
+
+# Maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# IDE
+.idea
+.vscode
+*.iml
+*.ipr
+*.iws
+.settings
+.project
+.classpath
+
+# Testing & Logs
+*.log
+test-output
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+docs
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
