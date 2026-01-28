@@ -83,12 +83,32 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: ${{ env.IMAGE_PREFIX_LOWER }}-frontend-web:prod
+          build-args: BUILD_CONFIG=production
           cache-from: type=gha,scope=frontend-web-prod
           cache-to: type=gha,mode=max,scope=frontend-web-prod
 
+  migrate-database:
+    name: Run Supabase migrations
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_PASS_PRD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link to Supabase project
+        run: supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF_PRD }}
+
+      - name: Push migrations to prod
+        run: supabase db push
+
   deploy:
     runs-on: ubuntu-latest
-    needs: [build-backend, build-frontend]
+    needs: [build-backend, build-frontend, migrate-database]
     steps:
       - name: Deploy to Hetzner PROD
         uses: appleboy/ssh-action@v1.2.0

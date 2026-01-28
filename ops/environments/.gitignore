@@ -1,7 +1,11 @@
-# Ignore all actual secret files
-/secrets
-.env.*
+# ===========================================
+# Environment Files
+# ===========================================
 
-# Keep templates
+# Ignore actual env files (contain secrets)
+.env.loc
+.env.dev
+.env.prd
+
+# Keep templates (no secrets)
 !.env.*.template
-!.gitignore

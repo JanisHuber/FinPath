@@ -1,19 +1,22 @@
 # Build stage
-FROM node:22-alpine AS builder
+FROM oven/bun:1.3.7-alpine AS builder
+
+# Build argument for environment (development, production)
+ARG BUILD_CONFIG=production
 
 WORKDIR /app
 
 # Copy package files first for better layer caching
 COPY package*.json ./
 
-# Use npm ci for faster, deterministic installs
-RUN npm ci --only=production=false
+# Install all dependencies (including devDependencies for build)
+RUN bun install
 
 # Copy source files
 COPY . .
 
-# Build the application
-RUN npm run build -- --configuration=production
+# Build with specified configuration
+RUN bun run build --configuration=${BUILD_CONFIG}
 
 # Serve Stage
 FROM nginx:alpine
