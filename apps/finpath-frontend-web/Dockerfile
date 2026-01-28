@@ -13,7 +13,7 @@ RUN bun install
 COPY . .
 
 # Build the application
-RUN bun run build -- --configuration=production
+RUN bun run build --configuration=production
 
 # Serve Stage
 FROM nginx:alpine
