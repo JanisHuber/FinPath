@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   apiBaseUrl: 'http://localhost:9080/api',
-  useMocks: true,
-  supabaseUrl: 'https://vsrlwxdxxzrwqqakqyzg.supabase.co',
-  supabaseKey: 'sb_publishable_dxDukCtyQdgqKBK56gD0vw_FAOsBW_B',
+  useMocks: false,
+  supabaseUrl: 'http://127.0.0.1:54321',
+  supabaseKey: 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH',
 };
