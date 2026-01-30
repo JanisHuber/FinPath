@@ -31,13 +31,8 @@ jobs:
           java-version: "21"
           cache: maven
 
-      - name: Install Maven Daemon
-        run: |
-          curl -fsSL https://downloads.apache.org/maven/mvnd/1.0.2/maven-mvnd-1.0.2-linux-aarch64.tar.gz | tar xz
-          echo "$PWD/maven-mvnd-1.0.2-linux-aarch64/bin" >> $GITHUB_PATH
-
       - name: Build backend JAR
-        run: mvnd -B -q -T 1C -DskipTests clean package --file apps/finpath-backend/pom.xml
+        run: mvn -B -q -T 1C -DskipTests clean package --file apps/finpath-backend/pom.xml
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
