@@ -15,7 +15,7 @@ server:
     include-stacktrace: always
 
 cors:
-  allowed-origins: https://dev.css-appli24.com
+  allowed-origins: https://dev.css-appli24.com, https://www.dev.css-appli24.com, https://dev.wealthjoe.app, https://www.dev.wealthjoe.app
 
 logging:
   level:

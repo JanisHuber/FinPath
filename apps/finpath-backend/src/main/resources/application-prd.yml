@@ -20,7 +20,7 @@ management:
       show-details: never
 
 cors:
-  allowed-origins: https://css-appli24.com
+  allowed-origins: https://css-appli24.com, https://www.css-appli24.com, https://wealthjoe.app, https://www.wealthjoe.app
 
 logging:
   level:

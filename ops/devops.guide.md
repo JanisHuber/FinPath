@@ -71,7 +71,7 @@ git push origin dev
 ```
 SUPABASE_ACCESS_TOKEN      # Personal Access Token von supabase.com/dashboard/account/tokens
 SUPABASE_PROJECT_REF_DEV   # Project Reference von dev (z.B. odbjralfrvmgjpcdhziu)
-SUPABASE_PROJECT_REF_PRD   # Project Reference von prod
+SUPABASE_PROJECT_REF_PRD   # Project Reference von prod (z.B. odbjralfrvmgjpcdhziu)
 SUPABASE_PASS_DEV          # Database Password dev
 SUPABASE_PASS_PRD          # Database Password prod
 ```
@@ -85,8 +85,3 @@ supabase/
     ├── 20260128083256_create_profiles.sql
     └── 20260129000000_add_accounts.sql   # Neue Migration
 ```
-
-### Wichtig:
-- Migrations nie editieren nachdem sie gepusht wurden
-- Immer neue Migration erstellen für Änderungen
-- `supabase db reset` lokal testen vor Push

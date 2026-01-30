@@ -22,7 +22,14 @@ export class AuthService {
 
   constructor(private readonly httpClient: HttpClient) {
     this.http = httpClient;
-    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
+    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
+      auth: {
+        storageKey: 'sb-auth-token',
+        flowType: 'pkce',
+        detectSessionInUrl: true,
+        persistSession: true,
+      },
+    });
     this.currentUserSubject = new BehaviorSubject<User | null>(null);
     this.currentUser$ = this.currentUserSubject.asObservable();
     this.currentProfileSubject = new BehaviorSubject<Profile | null>(null);

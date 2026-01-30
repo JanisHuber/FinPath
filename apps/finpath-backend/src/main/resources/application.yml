@@ -16,7 +16,6 @@ spring:
       leak-detection-threshold: 60000
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
     open-in-view: false
